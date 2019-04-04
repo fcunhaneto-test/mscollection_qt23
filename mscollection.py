@@ -1,0 +1,75 @@
+#!/home/francisco/Projects/Pycharm/mscollection_qt22/venv/bin/python
+#!/home/francisco/Projects/Pycharm/mscollection_qt22/venv/bin/python
+import sys
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QBrush, QColor
+from PyQt5.QtWidgets import QMainWindow, QMdiArea, QMenu, QMenuBar, \
+    QStatusBar, QAction, QDesktopWidget, QApplication
+
+import texts
+
+
+class MSCollection(QMainWindow):
+    """
+    Class of the main window and that also manages the display of all other
+    windows.
+    """
+    def __init__(self):
+        super(MSCollection, self).__init__()
+
+        css = 'styles/style.qss'
+        with open(css, 'r') as fh:
+            self.setStyleSheet(fh.read())
+
+        self.setWindowTitle(texts.main_widow)
+        screen = QDesktopWidget().screenGeometry()
+        s_width = screen.width()
+        s_heigth = screen.height()
+        x = int(0.10 * s_width)
+        y = int(0.10 * s_heigth)
+        width = int(0.8 * s_width)
+        height = int(0.8 * s_heigth)
+
+        self.setGeometry(x, y, width, height)
+
+        self.mdi_area = QMdiArea()
+        brush = QBrush(QColor(250, 248, 224))
+        brush.setStyle(Qt.SolidPattern)
+        self.mdi_area.setBackground(brush)
+
+        self.setCentralWidget(self.mdi_area)
+        self.menubar = QMenuBar(self)
+
+        self.setMenuBar(self.menubar)
+        self.statusbar = QStatusBar(self)
+        self.setStatusBar(self.statusbar)
+
+        # Menu and Submenu
+        self.menu_insert = QMenu(self.menubar)
+        self.menu_insert.setTitle(texts.insert)
+
+        self.menu_edit = QMenu(self.menubar)
+        self.menu_edit.setTitle(texts.edit)
+        self.menu_edit_movie_others = QMenu(self.menu_edit)
+        self.menu_edit_movie_others.setTitle(texts.menu_movie_others)
+        self.menu_edit_series_others = QMenu(self.menu_edit)
+        self.menu_edit_series_others.setTitle(texts.menu_series_others)
+        self.menu_edit_season = QMenu(self.menu_edit)
+        self.menu_edit_season.setTitle(texts.season_p)
+        self.menu_edit_general = QMenu(self.menu_insert)
+        self.menu_edit_general.setTitle(texts.general)
+        self.menu_delete_orphans = QMenu(texts.delete_orphans)
+
+        self.menu_search = QMenu(self.menubar)
+        self.menu_search.setTitle(texts.search)
+        self.menu_search_movies = QMenu(self.menu_search)
+        self.menu_search_movies.setTitle(texts.movie_p)
+        self.menu_search_series = QMenu(self.menu_search)
+        self.menu_search_series.setTitle(texts.series_p)
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    main_window = MSCollection()
+    main_window.show()
+    sys.exit(app.exec_())
