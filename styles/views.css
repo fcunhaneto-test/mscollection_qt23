@@ -59,6 +59,7 @@ p.summary {
 }
 p.fields {
     margin-bottom: 5px;
+    font-size: 11pt;
 }
 p span {
     color: #12548A;
@@ -68,12 +69,12 @@ p.year span {
     color: #12548A;
 }
 ul {
-    margin: -2px 0 0 20px;
+    margin: -2px 0 20px 0;
     color: #12548A;
 }
 ul li {
     margin-bottom: 10px;
-    font-size: 12pt;
+    font-size: 11pt;
     font-family: Arial, Helvetica, sans-serif;
     color: #000000;
 }

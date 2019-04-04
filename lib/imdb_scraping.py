@@ -12,17 +12,17 @@ path = os.getcwd()
 
 
 class ImdbScraping:
-    def __init__(self, url, obj):
+    def __init__(self, url, type):
         """
         This class scrapping series information from site IMDB.
         (https://www.imdb.com/) base in given url.
 
         :param url: Url site IMDB where the info are.
-        :param obj: Type object, movie or series, are scrapping.
+        :param type: Type object, movie or series, are scrapping.
         """
         self.http = urlopen(url)
         self.soup = BeautifulSoup(self.http, 'lxml')
-        self.obj = obj
+        self.type = type
         self.result = {
             'title': None,
             'original_title': None,
@@ -40,9 +40,9 @@ class ImdbScraping:
         # Title
         get_title = self.soup.find('div', {'class': 'title_wrapper'})
         if get_title:
-            if self.obj == 'movie':
+            if self.type == 'movie':
                 self.result['title'] = get_title.h1.text[:-7].strip()
-            elif self.obj == 'series':
+            elif self.type == 'series':
                 self.result['title'] = get_title.h1.text.strip()
 
         # Original Title
@@ -61,9 +61,9 @@ class ImdbScraping:
         get_date = get_title.find('a', {'title': 'See more release dates'})
         if get_date:
             date = get_date.text.split()
-            if self.obj == 'movie':
+            if self.type == 'movie':
                 self.result['year'] = date[2]
-            elif self.obj == 'series':
+            elif self.type == 'series':
                 self.result['year'] = date[2][1:5]
 
         # Time

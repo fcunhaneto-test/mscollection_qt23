@@ -293,7 +293,7 @@ def db_insert_obj(session, obj):
 
 
 # DB Insert Obj
-def db_get_id(session, id, name, obj):
+def db_get_id(session, cb, obj):
     """
     Try to insert a object in database if his id not exist.
 
@@ -303,6 +303,8 @@ def db_get_id(session, id, name, obj):
     :param obj: Object who is insert in database if it's id not exist.
     :return: Object id or None.
     """
+    id, name = get_combobox_info(cb)
+    obj.name = name
     if id != 0:
         return id
     elif id == 0 and name:

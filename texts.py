@@ -1,57 +1,58 @@
-movie_s = 'Filme'
-movie_p = 'Filmes'
-series_s = 'Série'
-series_p = 'Séries'
-title_s = 'Título'
-title_p = 'Títulos'
-director_s = 'Diretor'
-director_p = 'Diretores'
-creator_s = 'Criador'
-creator_p = 'Criadores'
+box = 'Box'
 category_s = 'Categoria'
 category_p = 'Categorias'
-character_s = 'Personagem'
-character_p = 'Personagens'
-media_s = 'Mídia'
-media_p = 'Mídias'
-season_s = 'Temporada'
-season_p = 'Temporadas'
-year_s = 'Ano'
-year_p = 'Anos'
 cast_s = 'Elenco'
 cast_p = 'Elencos'
-poster = 'Poster'
-summary_s = 'Resumo'
-summary_p = 'Resumos'
+character_s = 'Personagem'
+character_p = 'Personagens'
 collection_s = 'Coleção'
 collection_p = 'Coleções'
-other_s = 'Outro'
-other_p = 'Outros'
-box = 'Box'
-insert = 'Inserir'
-edit = 'Editar'
-search = 'Pesquisar'
-warning = 'Aviso'
-principal = 'Principal'
-order = 'Ordem'
-star = 'star'
+creator_s = 'Criador'
+creator_p = 'Criadores'
 delete = 'excluir'
-table = 'Tabela'
-keyword = 'Keyword'
-status = 'Status'
-for_ = 'Por'
-of_1 = 'de'
-select = 'Selecionar'
-fill = 'Preencher'
-general = 'Geral'
-franchise = 'Franquia'
-term_s = 'Termo'
-term_p = 'Termos'
-or_s = 'ou'
-imdb = 'IMDB'
+director_s = 'Diretor'
+director_p = 'Diretores'
+edit = 'Editar'
 episode_s = 'Episódio'
 episode_p = 'Episódios'
+fill = 'Preencher'
+franchise = 'Franquia'
+general = 'Geral'
+insert = 'Inserir'
+keyword = 'Keyword'
+media_s = 'Mídia'
+media_p = 'Mídias'
+movie_s = 'Filme'
+movie_p = 'Filmes'
 now = 'agora'
+order = 'Ordem'
+other_s = 'Outro'
+other_p = 'Outros'
+poster = 'Poster'
+principal = 'Principal'
+search = 'Pesquisar'
+season_s = 'Temporada'
+season_p = 'Temporadas'
+select = 'Selecionar'
+series_s = 'Série'
+series_p = 'Séries'
+star = 'star'
+status = 'Status'
+summary_s = 'Resumo'
+summary_p = 'Resumos'
+table = 'Tabela'
+term_s = 'Termo'
+term_p = 'Termos'
+title_s = 'Título'
+title_p = 'Títulos'
+warning = 'Aviso'
+year_s = 'Ano'
+year_p = 'Anos'
+
+for_ = 'Por'
+of_1 = 'de'
+or_s = 'ou'
+imdb = 'IMDB'
 selected = 'selecione'
 url = 'URL'
 
@@ -138,6 +139,14 @@ menu_others = 'Outros'
 menu_search_media_year = 'Mídia/Ano'
 
 # Tool Tip
+rb_star_tt = 'Marque para os principais atores.'
+with_term_tt = 'Pesquisa com os termos que você digitar.'
+with_title_term_tt = 'Buscar título com os termos:'
+with_episode_term_tt = 'ou episódios com os termos:'
+time_tt = 'Tempo de duração do filme.'
+series_exist = 'A série já foi inserida no banco de dados.'
+html_write = 'Não foi possível criar a página html.'
+
 imdb_search_tt = '<html><head/><body>' \
                  '<p>Buscar vários items de um filme no ' \
                  '<span style=" font-weight:600;">IMDB</span> e já preencher ' \
@@ -145,6 +154,7 @@ imdb_search_tt = '<html><head/><body>' \
                  '<p>Para isso basta você acessar a página do filme no ' \
                  '<span style="font-weight:600;">IMDB copiar e colar a URL ' \
                  '</span>no campo fornecido.</p></body></html>'
+
 ad_search_tt = '<html><head/><body>' \
                  '<p>Buscar vários items de um filme no ' \
                  '<span style=" font-weight:600;">Adoro Cinema</span> ' \
@@ -154,12 +164,10 @@ ad_search_tt = '<html><head/><body>' \
                  '</span>no campo fornecido.</p><p style="font-weight:600;">' \
                  'Preste atenção aos resultados fornecidos eles nem sempre ' \
                  'serão os valores esperados</p></body></html>'
+
 pb_add_row_tt = '<html><body><p>Pressione o botão <span style="color: red;">+' \
                 '</span> para adicionar mais uma linha a tabela.</p></body></html>'
-rb_star_tt = 'Marque para os principais atores.'
-with_term_tt = 'Pesquisa com os termos que você digitar.'
-with_title_term_tt = 'Buscar título com os termos:'
-with_episode_term_tt = 'ou episódios com os termos:'
+
 ms_episode_search = "<html><head/><body>" \
                     "<p>No site Minha Série os episódios são mostrados em url " \
                     "separadas. Portanto temos que percorrer uma série de urls " \
@@ -169,9 +177,15 @@ ms_episode_search = "<html><head/><body>" \
                     "decidimos iniciar a pela url do último episódio da " \
                     "temporada, portanto, busque a url do último episódio e " \
                     "insira aqui" \
-                    "</p><html><head/><body>"
-season_num_tt = 'Número da temporada'
-time_tt = 'Tempo de duração do filme.'
+                    "</p></body></html>"
+
+season_num_tt = "<html><head/><body>" \
+                "<p>O número de temporadas que você possui dessa série.</p>" \
+                "<p>Se eles estiverem em uma sequencia pode inseri-los da " \
+                "seguinte forma 1:4, outra forma seria separando eles por " \
+                "virgula 1, 2, 4, 5.</p></body></html>"
+
+
 
 # Error Message
 no_title = 'O campo título é obrigatório.'
@@ -183,6 +197,7 @@ no_creator = 'O campo criador precisa de um valor.'
 msg_db_conn = '<html><body><p style="color:red;">Erro ao tentar conectar com ' \
               'o banco de dados.</p></body></html'
 no_year = 'O campo ano é obrigatório.'
+cast_error = 'Não foi possível inserir o elenco '
 
 # Message Function
 def msg_insert_ok(name):

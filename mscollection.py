@@ -1,5 +1,4 @@
-#!/home/francisco/Projects/Pycharm/mscollection_qt22/venv/bin/python
-#!/home/francisco/Projects/Pycharm/mscollection_qt22/venv/bin/python
+#!/home/francisco/Projects/Pycharm/mscollection_qt23/venv/bin/python
 import sys
 
 from PyQt5.QtCore import Qt
@@ -8,6 +7,9 @@ from PyQt5.QtWidgets import QMainWindow, QMdiArea, QMenu, QMenuBar, \
     QStatusBar, QAction, QDesktopWidget, QApplication
 
 import texts
+
+from subwindows.insert.insert_movie import InsertMovie
+from subwindows.insert.insert_series import InsertSeries
 
 
 class MSCollection(QMainWindow):
@@ -67,6 +69,34 @@ class MSCollection(QMainWindow):
         self.menu_search_movies.setTitle(texts.movie_p)
         self.menu_search_series = QMenu(self.menu_search)
         self.menu_search_series.setTitle(texts.series_p)
+
+        # Actions Insert
+        self.action_insert_movie = QAction(
+            texts.movie_p, self, triggered=self.insert_movie)
+        self.action_insert_series = QAction(
+            texts.series_p, self, triggered=self.insert_series)
+
+        # AddAction Insert
+        self.menu_insert.addAction(self.action_insert_movie)
+        self.menu_insert.addAction(self.action_insert_series)
+
+        # AddAction Menu
+        self.menubar.addAction(self.menu_insert.menuAction())
+        self.menubar.addAction(self.menu_edit.menuAction())
+        self.menubar.addAction(self.menu_search.menuAction())
+
+    """
+    All methods below is for open subwindows
+    """
+    def insert_movie(self):
+        subwindow = InsertMovie(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def insert_series(self):
+        subwindow = InsertSeries(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

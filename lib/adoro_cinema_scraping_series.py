@@ -24,7 +24,7 @@ class AdoroCinemaSeriesScraping:
             'summary': None,
             'category_1': None,
             'category_2': None,
-            'director_creator': None,
+            'creator': None,
             'cast': None
         }
 
@@ -69,10 +69,10 @@ class AdoroCinemaSeriesScraping:
         # Creator
         if self.soup.find('div', {'class': 'meta-body-direction'}):
             try:
-                self.result['director_creator'] = self.soup.\
+                self.result['creator'] = self.soup.\
                     find('div', {'class': 'meta-body-direction'}).a.text
             except AttributeError:
-                self.result['director_creator'] = ''
+                self.result['creator'] = ''
 
         if self.soup.find('div', {'class': 'content-txt'}):
             try:

@@ -27,7 +27,7 @@ class AdoroCinemaMovieScraping:
             'summary': None,
             'category_1': None,
             'category_2': None,
-            'director_creator': None,
+            'director': None,
             'cast': None
         }
 
@@ -67,14 +67,14 @@ class AdoroCinemaMovieScraping:
         # Director
         if self.soup1.find('span', text=re.compile(r"^Direção:$")):
             try:
-                self.result['director_creator'] = self.soup1.\
+                self.result['director'] = self.soup1.\
                     find('span', text=re.compile(r"^Direção:$")). \
                     find_next_sibling('a').text
             except AttributeError:
                 pass
         elif self.soup1.find(itemprop="director"):
             try:
-                self.result['director_creator'] = self.soup1.find(itemprop="director").get_text()
+                self.result['director'] = self.soup1.find(itemprop="director").get_text()
             except AttributeError:
                 pass
 

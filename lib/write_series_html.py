@@ -46,6 +46,7 @@ def write_series_html(session, series):
 
     categories = ''
     if series.category_1_id:
+        print(series.category_1_id, series.category_1)
         categories = series.category_1.name
 
     if series.category_2_id:
