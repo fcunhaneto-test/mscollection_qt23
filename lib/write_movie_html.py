@@ -47,9 +47,6 @@ def write_movie_html(session, movie):
 
     categories = ''
     if movie.category_1_id:
-        print(movie.name)
-        print(movie.category_1_id)
-        print(movie.category_1.name)
         categories = movie.category_1.name
     if movie.category_2_id:
         categories += ', ' + movie.category_2.name

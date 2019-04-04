@@ -10,7 +10,7 @@ import texts
 
 from subwindows.insert.insert_movie import InsertMovie
 from subwindows.insert.insert_series import InsertSeries
-
+from subwindows.insert.insert_season import InsertSeason
 
 class MSCollection(QMainWindow):
     """
@@ -75,12 +75,15 @@ class MSCollection(QMainWindow):
             texts.movie_p, self, triggered=self.insert_movie)
         self.action_insert_series = QAction(
             texts.series_p, self, triggered=self.insert_series)
+        self.action_insert_season = QAction(
+            texts.season_p, self, triggered=self.insert_season)
 
         # AddAction Insert
         self.menu_insert.addAction(self.action_insert_movie)
         self.menu_insert.addAction(self.action_insert_series)
+        self.menu_insert.addAction(self.action_insert_season)
 
-        # AddAction Menu
+        # AddAction Menu ###################################
         self.menubar.addAction(self.menu_insert.menuAction())
         self.menubar.addAction(self.menu_edit.menuAction())
         self.menubar.addAction(self.menu_search.menuAction())
@@ -97,6 +100,12 @@ class MSCollection(QMainWindow):
         subwindow = InsertSeries(self)
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
+
+    def insert_season(self):
+        subwindow = InsertSeason(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

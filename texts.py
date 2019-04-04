@@ -212,6 +212,12 @@ def msg_insert_season_ok(name, num):
            '</span> foi inserido com sucesso.</p></body></html>'
     return text
 
+def msg_insert_epidsode_ok(name, num):
+    text = '<html><body><p style="color:#000000;">' \
+           '<span style="color:#3a90c7;">' + name + ' ' + num + \
+           '</span> episódios inseridos com sucesso.</p></body></html>'
+    return text
+
 def msg_insert_erro(name):
     text = '<html><body><p style="color:red;">Não foi possível inserir ' \
            '<span style="color:#3a90c7;">' + name + \
