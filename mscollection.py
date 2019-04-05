@@ -11,6 +11,9 @@ import texts
 from subwindows.insert.insert_movie import InsertMovie
 from subwindows.insert.insert_series import InsertSeries
 from subwindows.insert.insert_season import InsertSeason
+from subwindows.edit.edit_movie import EditMovie
+from subwindows.edit.edit_series import EditSeries
+
 
 class MSCollection(QMainWindow):
     """
@@ -70,7 +73,7 @@ class MSCollection(QMainWindow):
         self.menu_search_series = QMenu(self.menu_search)
         self.menu_search_series.setTitle(texts.series_p)
 
-        # Actions Insert
+        # Actions Insert ######################################################
         self.action_insert_movie = QAction(
             texts.movie_p, self, triggered=self.insert_movie)
         self.action_insert_series = QAction(
@@ -83,7 +86,17 @@ class MSCollection(QMainWindow):
         self.menu_insert.addAction(self.action_insert_series)
         self.menu_insert.addAction(self.action_insert_season)
 
-        # AddAction Menu ###################################
+        # Actions Edit ######################################################
+        self.action_edit_movie = QAction(
+            texts.movie_p, self, triggered=self.edit_movie)
+        self.action_edit_series = QAction(
+            texts.series_p, self, triggered=self.edit_series)
+
+        # AddAction Edit
+        self.menu_edit.addAction(self.action_edit_movie)
+        self.menu_edit.addAction(self.action_edit_series)
+
+        # AddAction Menu ######################################################
         self.menubar.addAction(self.menu_insert.menuAction())
         self.menubar.addAction(self.menu_edit.menuAction())
         self.menubar.addAction(self.menu_search.menuAction())
@@ -106,6 +119,15 @@ class MSCollection(QMainWindow):
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
 
+    def edit_movie(self):
+        subwindow = EditMovie(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def edit_series(self):
+        subwindow = EditSeries(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

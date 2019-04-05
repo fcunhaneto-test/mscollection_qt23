@@ -144,7 +144,15 @@ with_term_tt = 'Pesquisa com os termos que você digitar.'
 with_title_term_tt = 'Buscar título com os termos:'
 with_episode_term_tt = 'ou episódios com os termos:'
 time_tt = 'Tempo de duração do filme.'
-series_exist = 'A série já foi inserida no banco de dados.'
+
+director_tt = '<html><head/><body>' \
+              '<p>Para editar os diretores vá em Filmes Outros &rarr; ' \
+              'Diretores</p></body></html>'
+
+creator_tt = '<html><head/><body>' \
+              '<p>Para editar os criadores vá em Séries Outros &rarr; ' \
+             'Criadores</p></body></html>'
+
 html_write = 'Não foi possível criar a página html.'
 
 imdb_search_tt = '<html><head/><body>' \
@@ -188,7 +196,7 @@ season_num_tt = "<html><head/><body>" \
 
 
 # Error Message
-no_title = 'O campo título é obrigatório.'
+no_title = 'O campo título e ano são obrigatório.'
 no_series = 'Você precisa selecionar uma série.'
 no_season = 'Você precisa selecionar uma temporada.'
 no_director = 'O campo diretor precisa de um valor.'
@@ -198,6 +206,8 @@ msg_db_conn = '<html><body><p style="color:red;">Erro ao tentar conectar com ' \
               'o banco de dados.</p></body></html'
 no_year = 'O campo ano é obrigatório.'
 cast_error = 'Não foi possível inserir o elenco '
+series_exist = 'A série já foi inserida no banco de dados.'
+movie_exist = 'O filme já foi inserida no banco de dados.'
 
 # Message Function
 def msg_insert_ok(name):

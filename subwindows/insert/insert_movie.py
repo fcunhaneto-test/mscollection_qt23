@@ -6,8 +6,8 @@ from threading import Thread
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QIcon, QPixmap
 from PyQt5.QtWidgets import QMdiSubWindow, QWidget, QFormLayout, QVBoxLayout, \
-    QHBoxLayout, QGridLayout, QPushButton, QTextEdit, QLabel, QCheckBox, \
-    QMessageBox, QSpacerItem, QTableWidget, QSizePolicy
+    QGridLayout, QPushButton, QTextEdit, QLabel, QCheckBox,  QMessageBox, \
+    QSpacerItem, QTableWidget, QSizePolicy
 
 from sqlalchemy.exc import IntegrityError, DBAPIError, SQLAlchemyError
 from sqlalchemy.orm.exc import NoResultFound
@@ -105,7 +105,7 @@ class InsertMovie(QMdiSubWindow):
         ])
         self.hbox_search.setContentsMargins(20, 10, 20, 0)
 
-        self.hbox_pb_search = QHBoxLayout()
+        self.hbox_pb_search = hbox_create([])
         self.hbox_pb_search.setContentsMargins(20, 0, 20, 0)
 
         self.line = line_h_create('2px', '#000000')
@@ -202,20 +202,20 @@ class InsertMovie(QMdiSubWindow):
         self.fm_2.setWidget(4, QFormLayout.FieldRole, self.cb_keyword)
 
         # Web URL
-        self.lb_url = QLabel(texts.lb_url)
-        self.le_url = le_create(255)
-        self.fm_2.setWidget(5, QFormLayout.LabelRole, self.lb_url)
-        self.fm_2.setWidget(5, QFormLayout.FieldRole, self.le_url)
+        self.lb_web_url = QLabel(texts.lb_url)
+        self.le_web_url = le_create(255)
+        self.fm_2.setWidget(5, QFormLayout.LabelRole, self.lb_web_url)
+        self.fm_2.setWidget(5, QFormLayout.FieldRole, self.le_web_url)
 
         # Horizontal Layout for Frame layout
-        self.hbox_fms = QHBoxLayout()
+        self.hbox_fms = hbox_create([])
         self.hbox_fms.addLayout(self.fm_1)
         self.hbox_fms.addLayout(self.fm_2)
 
         self.vbox_main.addLayout(self.hbox_fms)
 
         # Cast Summary
-        self.hbox_summary_cast = QHBoxLayout()
+        self.hbox_summary_cast = hbox_create([])
         self.hbox_summary_cast.setContentsMargins(20, 0, 20, 0)
         self.vbox_summary = QVBoxLayout()
 
@@ -311,8 +311,8 @@ class InsertMovie(QMdiSubWindow):
         self.setTabOrder(self.cb_category_2, self.cb_box)
         self.setTabOrder(self.cb_box, self.cb_keyword)
         self.setTabOrder(self.cb_keyword, self.le_poster)
-        self.setTabOrder(self.le_poster, self.le_url)
-        self.setTabOrder(self.le_url, self.le_summary)
+        self.setTabOrder(self.le_poster, self.le_web_url)
+        self.setTabOrder(self.le_web_url, self.le_summary)
 
     # Resize Event
     def resizeEvent(self, event):
@@ -346,7 +346,7 @@ class InsertMovie(QMdiSubWindow):
         """
         self.movie = Movie()
 
-        if not self.le_title.text():
+        if not self.le_title.text() or not self.le_year:
             show_msg(
                 texts.insert_error, texts.no_title,
                 QMessageBox.Warning,
@@ -368,15 +368,14 @@ class InsertMovie(QMdiSubWindow):
             else:
                 self.movie.poster = '../images/poster_placeholder.png'
 
-            self.movie.web_url = self.le_url.text()
+            self.movie.web_url = self.le_web_url.text()
             self.movie.summary = self.le_summary.toPlainText()
 
             id, name = get_combobox_info(self.cb_media)
             if id:
                 self.movie.media_id = id
 
-            self.movie.box_id = db_get_id(
-                self.session, self.cb_box, Box())
+            self.movie.box_id = db_get_id(self.session, self.cb_box, Box())
 
             self.movie.keyword_id = db_get_id(
                 self.session, self.cb_keyword, Keyword())
@@ -457,29 +456,16 @@ class InsertMovie(QMdiSubWindow):
                 self.session.rollback()
                 self.session.commit()
                 show_msg(
-                    texts.insert_error, texts.series_exist,
+                    texts.insert_error, texts.movie_exist,
                     QMessageBox.Critical, QMessageBox.Close, str(error)
                 )
-            except DBAPIError as error:
+            except (DBAPIError, SQLAlchemyError) as error:
                 self.session.rollback()
                 self.session.commit()
                 text = texts.msg_insert_erro(self.movie.name)
                 show_msg(
                     texts.insert_error, text, QMessageBox.Critical,
                     QMessageBox.Close, str(error)
-                )
-            except SQLAlchemyError as error:
-                self.session.rollback()
-                self.session.commit()
-                text = texts.msg_insert_erro(self.movie.name)
-                show_msg(
-                    texts.insert_error, text,
-                    QMessageBox.Critical,
-                    QMessageBox.Close,
-                    show_msg(
-                        texts.insert_error, text, QMessageBox.Critical,
-                        QMessageBox.Close, str(error)
-                    )
                 )
             else:
                 try:
@@ -632,7 +618,7 @@ class InsertMovie(QMdiSubWindow):
         self.le_year.setText('')
         self.le_time.setText('')
         self.le_poster.setText('')
-        self.le_url.setText('')
+        self.le_web_url.setText('')
         self.le_summary.setText('')
         self.refresh_combobox()
 

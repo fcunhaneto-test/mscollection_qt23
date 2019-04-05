@@ -6,8 +6,8 @@ from threading import Thread
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QIcon, QPixmap
 from PyQt5.QtWidgets import QMdiSubWindow, QWidget, QFormLayout, QVBoxLayout, \
-    QHBoxLayout, QGridLayout, QPushButton, QTextEdit, QLabel, QCheckBox, \
-    QMessageBox, QSpacerItem, QTableWidget, QSizePolicy
+    QGridLayout, QPushButton, QTextEdit, QLabel, QCheckBox,  QMessageBox, \
+    QSpacerItem, QTableWidget, QSizePolicy
 
 from sqlalchemy.exc import IntegrityError, DBAPIError, SQLAlchemyError
 from sqlalchemy.orm.exc import NoResultFound
@@ -105,7 +105,7 @@ class InsertSeries(QMdiSubWindow):
         ])
         self.hbox_search.setContentsMargins(20, 10, 20, 0)
 
-        self.hbox_pb_search = QHBoxLayout()
+        self.hbox_pb_search = hbox_create([])
         self.hbox_pb_search.setContentsMargins(20, 0, 20, 0)
 
         self.line = line_h_create('2px', '#000000')
@@ -200,14 +200,14 @@ class InsertSeries(QMdiSubWindow):
         self.fm_2.setWidget(4, QFormLayout.FieldRole, self.le_poster)
 
         # Horizontal Layout for Frame layout
-        self.hbox_fms = QHBoxLayout()
+        self.hbox_fms = hbox_create([])
         self.hbox_fms.addLayout(self.fm_1)
         self.hbox_fms.addLayout(self.fm_2)
 
         self.vbox_main.addLayout(self.hbox_fms)
 
         # Cast Summary
-        self.hbox_summary_cast = QHBoxLayout()
+        self.hbox_summary_cast = hbox_create([])
         self.hbox_summary_cast.setContentsMargins(20, 0, 20, 0)
         self.vbox_summary = QVBoxLayout()
 
@@ -448,26 +448,13 @@ class InsertSeries(QMdiSubWindow):
                     texts.insert_error, texts.series_exist,
                     QMessageBox.Critical, QMessageBox.Close, str(error)
                 )
-            except DBAPIError as error:
+            except (DBAPIError, SQLAlchemyError)  as error:
                 self.session.rollback()
                 self.session.commit()
                 text = texts.msg_insert_erro(self.series.name)
                 show_msg(
                     texts.insert_error, text, QMessageBox.Critical,
                     QMessageBox.Close, str(error)
-                )
-            except SQLAlchemyError as error:
-                self.session.rollback()
-                self.session.commit()
-                text = texts.msg_insert_erro(self.series.name)
-                show_msg(
-                    texts.insert_error, text,
-                    QMessageBox.Critical,
-                    QMessageBox.Close,
-                    show_msg(
-                        texts.insert_error, text, QMessageBox.Critical,
-                        QMessageBox.Close, str(error)
-                    )
                 )
             else:
                 try:

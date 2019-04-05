@@ -3,8 +3,8 @@ import os
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QIcon, QPixmap
 from PyQt5.QtWidgets import QMdiSubWindow, QWidget, QFormLayout, QVBoxLayout, \
-    QHBoxLayout, QLabel, QComboBox, QSpacerItem, QSizePolicy, QTableWidget, \
-    QCheckBox, QTableWidgetItem, QMessageBox, QProgressBar
+    QLabel, QComboBox, QSpacerItem, QSizePolicy, QTableWidget, QCheckBox, \
+    QTableWidgetItem, QMessageBox, QProgressBar
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 import texts
@@ -47,8 +47,7 @@ class InsertSeason(QMdiSubWindow):
         self.vbox_main.setContentsMargins(20, 20, 20, 20)
 
         # Series Left
-        self.hbox_2 = QHBoxLayout()
-        self.hbox_2.setSpacing(10)
+        self.hbox_2 = hbox_create([])
 
         # Series Left Side
         self.fm_left = QFormLayout()
@@ -113,9 +112,6 @@ class InsertSeason(QMdiSubWindow):
         self.lb_episode_search = QLabel(texts.lb_episode_search)
         self.fm_left.setWidget(5, QFormLayout.LabelRole, self.lb_episode_search)
 
-        self.hbox_url_pb = QHBoxLayout()
-        self.hbox_url_pb.setSpacing(10)
-
         self.pb_search_imdb = pb_create(texts.imdb)
         self.pb_search_imdb.clicked.connect(lambda site:
                                             self.scraping_episodes('imdb'))
@@ -123,8 +119,8 @@ class InsertSeason(QMdiSubWindow):
         self.pb_search_ms.clicked.connect(lambda site:
                                           self.scraping_episodes('ms'))
 
-        self.hbox_url_pb.addWidget(self.pb_search_imdb)
-        self.hbox_url_pb.addWidget(self.pb_search_ms)
+        self.hbox_url_pb = hbox_create([self.pb_search_imdb, self.pb_search_ms])
+
         self.fm_left.setLayout(5, QFormLayout.FieldRole,
                                self.hbox_url_pb)
 
@@ -133,7 +129,6 @@ class InsertSeason(QMdiSubWindow):
         line_h_2 = line_h_create('2px', '#7777FF')
         self.fm_left.setWidget(6, QFormLayout.FieldRole, line_h_1)
         self.fm_left.setWidget(7, QFormLayout.FieldRole, line_h_2)
-        self.hbox_pb_main = QHBoxLayout()
 
         self.pb_save = pb_create(texts.pb_save)
         self.pb_save.clicked.connect(self.save_season_episodes)
@@ -151,10 +146,9 @@ class InsertSeason(QMdiSubWindow):
         self.pb_leave.clicked.connect(self.close)
         self.pb_leave.setShortcut('Ctrl+Q')
 
-        self.hbox_pb_main.addWidget(self.pb_save)
-        self.hbox_pb_main.addWidget(self.pb_clear)
-        self.hbox_pb_main.addWidget(self.pb_help)
-        self.hbox_pb_main.addWidget(self.pb_leave)
+        self.hbox_pb_main = hbox_create([
+            self.pb_save, self.pb_clear, self.pb_help, self.pb_leave
+        ])
 
         self.fm_left.setLayout(8, QFormLayout.FieldRole, self.hbox_pb_main)
 
@@ -163,15 +157,12 @@ class InsertSeason(QMdiSubWindow):
         self.vbox_right.setContentsMargins(5, 0, 0, 0)
 
         # Cast Add Row
-        self.hbox_cast = QHBoxLayout()
-
         self.lb_cast = QLabel(texts.cast_s)
         self.pb_add_row_cast = pb_create('+', 12, 30, 50)
         self.pb_add_row_cast.setShortcut('CTRL+T')
         self.pb_add_row_cast.clicked.connect(self.table_cast_add_rows)
 
-        self.hbox_cast.addWidget(self.lb_cast)
-        self.hbox_cast.addWidget(self.pb_add_row_cast)
+        self.hbox_cast = hbox_create([self.lb_cast, self.pb_add_row_cast])
 
         spacer_item = QSpacerItem(40, 20, QSizePolicy.Expanding,
                                   QSizePolicy.Minimum)
@@ -219,8 +210,6 @@ class InsertSeason(QMdiSubWindow):
         self.vbox_episode = QVBoxLayout()
 
         # Episode Add Row
-        self.hbox_episode = QHBoxLayout()
-
         self.lb_episode = QLabel(texts.episode_s)
         self.pb_add_row_episode = pb_create('+', 12, 30, 50)
         self.pb_add_row_episode.clicked.connect(self.table_episode_add_row)
@@ -228,9 +217,9 @@ class InsertSeason(QMdiSubWindow):
         self.p_bar = QProgressBar(self.subwindow)
         self.p_bar.setValue(0)
 
-        self.hbox_episode.addWidget(self.lb_episode)
-        self.hbox_episode.addWidget(self.pb_add_row_episode)
-        self.hbox_episode.addWidget(self.p_bar)
+        self.hbox_episode = hbox_create([
+            self.lb_episode, self.pb_add_row_episode, self.p_bar
+        ])
 
         spacer_item = QSpacerItem(40, 20, QSizePolicy.Expanding,
                                   QSizePolicy.Minimum)
