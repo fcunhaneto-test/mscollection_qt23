@@ -87,6 +87,7 @@ help_edit_series = 'Ajuda Editar Séries'
 help_edit_cast = 'Ajuda Editar Elenco'
 table_movie_categories = 'Tabela Filmes Categoria'
 search_web_url = 'Pesquisar Web Url Po Título'
+rewrite_html = 'Rewrite HTML'
 
 # Labels
 lb_search_imdb = 'Insira a URL do IMDB'
@@ -131,7 +132,7 @@ pb_ad_search_confirm = 'Pesquisar no Adoro Cinema'
 pb_imdb_ad_search = 'Preencher Campos'
 pb_search_imdb = 'Pesquisar Episódio IMDB'
 pb_ms_search = 'MINHA SÉRIE'
-
+pb_rewrite_html = 'REWRITE HTML'
 # Menu
 menu_movie_others = 'Filmes Outros'
 menu_series_others = 'Séries Outros'

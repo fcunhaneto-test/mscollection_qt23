@@ -16,6 +16,7 @@ from subwindows.edit.edit_movie import EditMovie
 from subwindows.edit.edit_series import EditSeries
 from subwindows.edit.edit_season import EditSeason
 
+from rewrite_html.rewrite_html import RewriteHtml
 
 class MSCollection(QMainWindow):
     """
@@ -95,11 +96,14 @@ class MSCollection(QMainWindow):
             texts.series_p, self, triggered=self.edit_series)
         self.action_edit_season = QAction(
             texts.season_p, self, triggered=self.edit_season)
+        self.action_edit_rewrite_html = QAction(
+            texts.rewrite_html, self, triggered=self.rewrite_html)
 
         # AddAction Edit
         self.menu_edit.addAction(self.action_edit_movie)
         self.menu_edit.addAction(self.action_edit_series)
         self.menu_edit.addAction(self.action_edit_season)
+        self.menu_edit.addAction(self.action_edit_rewrite_html)
 
         # AddAction Menu ######################################################
         self.menubar.addAction(self.menu_insert.menuAction())
@@ -136,6 +140,11 @@ class MSCollection(QMainWindow):
 
     def edit_season(self):
         subwindow = EditSeason(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def rewrite_html(self):
+        subwindow = RewriteHtml(self)
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
 

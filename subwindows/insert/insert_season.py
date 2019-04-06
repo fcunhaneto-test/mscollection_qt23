@@ -214,7 +214,7 @@ class InsertSeason(QMdiSubWindow):
         self.pb_add_row_episode = pb_create('+', 12, 30, 50)
         self.pb_add_row_episode.clicked.connect(self.table_episode_add_row)
 
-        self.p_bar = QProgressBar(self.subwindow)
+        self.p_bar = QProgressBar()
         self.p_bar.setValue(0)
 
         self.hbox_episode = hbox_create([
