@@ -8,16 +8,23 @@ from PyQt5.QtWidgets import QMainWindow, QMdiArea, QMenu, QMenuBar, \
 
 import texts
 
+# Inserts
 from subwindows.insert.insert_movie import InsertMovie
 from subwindows.insert.insert_series import InsertSeries
 from subwindows.insert.insert_season import InsertSeason
 
+# Edits
 from subwindows.edit.edit_movie import EditMovie
 from subwindows.edit.edit_series import EditSeries
 from subwindows.edit.edit_season import EditSeason
-from rewrite_html.rewrite_html import RewriteHtml
-from subwindows.edit.edit_cast import EditCast
 
+from subwindows.edit.edit_cast import EditCast
+from subwindows.edit.edit_director import EditDirector
+from subwindows.edit.edit_creator import EditCreator
+
+from rewrite_html.rewrite_html import RewriteHtml
+
+# Searchs
 from subwindows.search.search_movie_title import SearchMovieTitle
 from subwindows.search.search_series_title import SearchSeriesTitle
 
@@ -113,14 +120,21 @@ class MSCollection(QMainWindow):
         self.action_edit_series_cast = QAction(
             texts.cast_s, self, triggered=self.edit_series_cast)
 
+        self.action_edit_director = QAction(texts.director_s, self,
+                                            triggered=self.edit_director)
+        self.action_edit_creator = QAction(texts.creator_s, self,
+                                           triggered=self.edit_creator)
+
         # AddAction Edit
         self.menu_edit.addAction(self.action_edit_movie)
         self.menu_edit.addAction(self.menu_edit_movie_others.menuAction())
         self.menu_edit_movie_others.addAction(self.action_edit_movie_cast)
+        self.menu_edit_movie_others.addAction(self.action_edit_director)
 
         self.menu_edit.addAction(self.action_edit_series)
         self.menu_edit.addAction(self.menu_edit_series_others.menuAction())
         self.menu_edit_series_others.addAction(self.action_edit_series_cast)
+        self.menu_edit_series_others.addAction(self.action_edit_creator)
 
         self.menu_edit.addAction(self.action_edit_season)
         self.menu_edit.addAction(self.action_edit_rewrite_html)
@@ -180,6 +194,11 @@ class MSCollection(QMainWindow):
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
 
+    def rewrite_html(self):
+        subwindow = RewriteHtml(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
     def edit_movie_cast(self):
         subwindow = EditCast(self, 'movie')
         self.mdi_area.addSubWindow(subwindow)
@@ -190,9 +209,13 @@ class MSCollection(QMainWindow):
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
 
+    def edit_director(self):
+        subwindow = EditDirector(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
 
-    def rewrite_html(self):
-        subwindow = RewriteHtml(self)
+    def edit_creator(self):
+        subwindow = EditCreator(self)
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
 
