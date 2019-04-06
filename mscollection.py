@@ -21,6 +21,7 @@ from subwindows.edit.edit_season import EditSeason
 from subwindows.edit.edit_cast import EditCast
 from subwindows.edit.edit_director import EditDirector
 from subwindows.edit.edit_creator import EditCreator
+from subwindows.edit.edit_others import EditOthers
 
 from rewrite_html.rewrite_html import RewriteHtml
 
@@ -125,16 +126,42 @@ class MSCollection(QMainWindow):
         self.action_edit_creator = QAction(texts.creator_s, self,
                                            triggered=self.edit_creator)
 
+        self.action_edit_box = QAction(texts.box, self)
+        self.action_edit_box.triggered.connect(lambda: self.edit_others('box'))
+        self.action_edit_category = QAction(texts.category_p, self)
+        self.action_edit_category.triggered.connect(
+            lambda: self.edit_others('category'))
+        self.action_edit_media = QAction(texts.media_s, self)
+        self.action_edit_media.triggered.connect(
+            lambda: self.edit_others('media'))
+        self.action_edit_actor = QAction(texts.actor_s, self)
+        self.action_edit_actor.triggered.connect(
+            lambda: self.edit_others('actor'))
+        self.action_edit_character = QAction(texts.character_s, self)
+        self.action_edit_character.triggered.connect(
+            lambda: self.edit_others('character'))
+        self.action_edit_keyword = QAction(texts.keyword, self)
+        self.action_edit_keyword.triggered.connect(
+            lambda: self.edit_others('keyword'))
+
         # AddAction Edit
         self.menu_edit.addAction(self.action_edit_movie)
         self.menu_edit.addAction(self.menu_edit_movie_others.menuAction())
         self.menu_edit_movie_others.addAction(self.action_edit_movie_cast)
         self.menu_edit_movie_others.addAction(self.action_edit_director)
+        self.menu_edit_movie_others.addAction(self.action_edit_box)
 
         self.menu_edit.addAction(self.action_edit_series)
         self.menu_edit.addAction(self.menu_edit_series_others.menuAction())
         self.menu_edit_series_others.addAction(self.action_edit_series_cast)
         self.menu_edit_series_others.addAction(self.action_edit_creator)
+
+        self.menu_edit.addAction(self.menu_edit_general.menuAction())
+        self.menu_edit_general.addAction(self.action_edit_category)
+        self.menu_edit_general.addAction(self.action_edit_media)
+        self.menu_edit_general.addAction(self.action_edit_actor)
+        self.menu_edit_general.addAction(self.action_edit_character)
+        self.menu_edit_general.addAction(self.action_edit_keyword)
 
         self.menu_edit.addAction(self.action_edit_season)
         self.menu_edit.addAction(self.action_edit_rewrite_html)
@@ -216,6 +243,11 @@ class MSCollection(QMainWindow):
 
     def edit_creator(self):
         subwindow = EditCreator(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def edit_others(self, op):
+        subwindow = EditOthers(self, op)
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
 
