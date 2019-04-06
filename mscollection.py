@@ -15,8 +15,16 @@ from subwindows.insert.insert_season import InsertSeason
 from subwindows.edit.edit_movie import EditMovie
 from subwindows.edit.edit_series import EditSeries
 from subwindows.edit.edit_season import EditSeason
-
 from rewrite_html.rewrite_html import RewriteHtml
+
+from subwindows.search.search_movie_title import SearchMovieTitle
+from subwindows.search.search_series_title import SearchSeriesTitle
+
+from subwindows.search.view_select_title import ViewSelectTitle
+from subwindows.search.view_movie_web_url import ViewMovieUrl
+from subwindows.search.view_series_web_url import ViewSeriesUrl
+from subwindows.search.view_movie_search_url import  ViewMovieSearchUrl
+from subwindows.search.view_series_search_url import  ViewSeriesSearchUrl
 
 class MSCollection(QMainWindow):
     """
@@ -94,16 +102,38 @@ class MSCollection(QMainWindow):
             texts.movie_p, self, triggered=self.edit_movie)
         self.action_edit_series = QAction(
             texts.series_p, self, triggered=self.edit_series)
+
         self.action_edit_season = QAction(
             texts.season_p, self, triggered=self.edit_season)
         self.action_edit_rewrite_html = QAction(
             texts.rewrite_html, self, triggered=self.rewrite_html)
+
+        self.actions_search_series_title = QAction(
+            texts.title_s, self, triggered=self.search_series_title)
 
         # AddAction Edit
         self.menu_edit.addAction(self.action_edit_movie)
         self.menu_edit.addAction(self.action_edit_series)
         self.menu_edit.addAction(self.action_edit_season)
         self.menu_edit.addAction(self.action_edit_rewrite_html)
+
+        # Actions Search ######################################################
+        self.actions_search_movie_title = QAction(
+            texts.title_s, self, triggered=self.search_movie_title)
+        self.actions_view_movie_web_url = QAction(
+            texts.lb_url, self, triggered=self.view_movie_web_url)
+
+        self.actions_view_series_web_url = QAction(
+            texts.lb_url, self, triggered=self.view_series_web_url)
+        self.actions_view_series_search_url = QAction(
+            texts.lb_search_url, self, triggered=self.view_series_search_url)
+
+        # AddAction Search
+        self.menu_search_movies.addAction(self.actions_search_movie_title)
+        self.menu_search_series.addAction(self.actions_search_series_title)
+
+        self.menu_search.addAction(self.menu_search_movies.menuAction())
+        self.menu_search.addAction(self.menu_search_series.menuAction())
 
         # AddAction Menu ######################################################
         self.menubar.addAction(self.menu_insert.menuAction())
@@ -147,6 +177,42 @@ class MSCollection(QMainWindow):
         subwindow = RewriteHtml(self)
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
+
+    def view_html(self, url, title):
+        subwindow = ViewSelectTitle(self, url, title)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def search_movie_title(self):
+        subwindow = SearchMovieTitle(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def search_series_title(self):
+        subwindow = SearchSeriesTitle(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def view_movie_web_url(self):
+        subwindow = ViewMovieUrl(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def view_series_web_url(self):
+        subwindow = ViewSeriesUrl(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def view_movie_search_url(self):
+        subwindow = ViewMovieSearchUrl(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def view_series_search_url(self):
+        subwindow = ViewSeriesSearchUrl(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

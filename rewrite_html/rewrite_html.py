@@ -21,8 +21,8 @@ class RewriteHtml(QMdiSubWindow):
         self.main = main
 
         self.setWindowTitle(texts.rewrite_html)
-        width = int(0.40 * main.frameSize().width())
-        height = int(0.8 * main.frameSize().height())
+        width = int(0.4 * main.frameSize().width())
+        height = int(0.2 * main.frameSize().height())
         self.setGeometry(0, 0, width, height)
 
         self.subwindow = QWidget()
