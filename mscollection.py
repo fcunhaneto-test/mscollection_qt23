@@ -11,8 +11,10 @@ import texts
 from subwindows.insert.insert_movie import InsertMovie
 from subwindows.insert.insert_series import InsertSeries
 from subwindows.insert.insert_season import InsertSeason
+
 from subwindows.edit.edit_movie import EditMovie
 from subwindows.edit.edit_series import EditSeries
+from subwindows.edit.edit_season import EditSeason
 
 
 class MSCollection(QMainWindow):
@@ -91,10 +93,13 @@ class MSCollection(QMainWindow):
             texts.movie_p, self, triggered=self.edit_movie)
         self.action_edit_series = QAction(
             texts.series_p, self, triggered=self.edit_series)
+        self.action_edit_season = QAction(
+            texts.season_p, self, triggered=self.edit_season)
 
         # AddAction Edit
         self.menu_edit.addAction(self.action_edit_movie)
         self.menu_edit.addAction(self.action_edit_series)
+        self.menu_edit.addAction(self.action_edit_season)
 
         # AddAction Menu ######################################################
         self.menubar.addAction(self.menu_insert.menuAction())
@@ -126,6 +131,11 @@ class MSCollection(QMainWindow):
 
     def edit_series(self):
         subwindow = EditSeries(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def edit_season(self):
+        subwindow = EditSeason(self)
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
 

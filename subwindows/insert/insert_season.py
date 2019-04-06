@@ -242,9 +242,6 @@ class InsertSeason(QMdiSubWindow):
         self.table_episode.setColumnWidth(1, 0.20 * self.tb_witdh_episode)
         self.table_episode.setColumnWidth(2, 0.70 * self.tb_witdh_episode)
 
-        self.table_episode.setAlternatingRowColors(True)
-        self.table_episode.setStyleSheet('alternate-background-color: #E6E6E6;')
-
         self.rows_episode = 0
         self.result_episode = None
         self.table_episode.itemChanged.connect(self.item_changed)
@@ -257,12 +254,6 @@ class InsertSeason(QMdiSubWindow):
         self.vbox_main.addLayout(self.vbox_episode)
 
         self.cb_series.currentIndexChanged.connect(self.selected_series)
-
-        self.errors = {
-            'no error': 1,
-            'no cast': 2,
-            'db error': 3,
-        }
 
         # Tab Order
         self.cb_series.setFocus()
@@ -411,8 +402,6 @@ class InsertSeason(QMdiSubWindow):
             show_msg(texts.insert_error, text, QMessageBox.Critical,
                      QMessageBox.Close, str(error))
             return
-
-        return self.errors['no error'], name_s
 
     # Selected Series
     def selected_series(self):
@@ -613,7 +602,7 @@ class InsertSeason(QMdiSubWindow):
         Add rows in table episode.
         """
         self.table_episode.insertRow(self.rows_episode)
-        self.table_episode.setRowHeight(self.rows_episode, 150)
+
         if self.result_episode:
             self.result_episode.append(['', '', ''])
         else:
@@ -679,11 +668,12 @@ class InsertSeason(QMdiSubWindow):
 
             self.rows_episode += 1
 
-        self.table_episode.itemChanged.connect(self.item_changed)
         self.table_episode.resizeRowsToContents()
         self.table_episode.setAlternatingRowColors(True)
         self.table_episode.setStyleSheet(
             "alternate-background-color: #F0FAE4; background-color: #ffffff;")
+
+        self.table_episode.itemChanged.connect(self.item_changed)
 
     # Item Change
     def item_changed(self, item):
@@ -697,6 +687,10 @@ class InsertSeason(QMdiSubWindow):
         c = item.column() - 1
         self.result_episode[r][c] = self.table_episode. \
             item(item.row(), item.column()).text()
+        self.table_episode.resizeRowsToContents()
+        self.table_episode.setAlternatingRowColors(True)
+        self.table_episode.setStyleSheet(
+            "alternate-background-color: #F0FAE4; background-color: #ffffff;")
 
     # Star Changed
     def chbox_star_changed(self, ch):
