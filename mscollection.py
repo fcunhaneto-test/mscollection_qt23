@@ -16,6 +16,7 @@ from subwindows.edit.edit_movie import EditMovie
 from subwindows.edit.edit_series import EditSeries
 from subwindows.edit.edit_season import EditSeason
 from rewrite_html.rewrite_html import RewriteHtml
+from subwindows.edit.edit_cast import EditCast
 
 from subwindows.search.search_movie_title import SearchMovieTitle
 from subwindows.search.search_series_title import SearchSeriesTitle
@@ -102,18 +103,25 @@ class MSCollection(QMainWindow):
             texts.movie_p, self, triggered=self.edit_movie)
         self.action_edit_series = QAction(
             texts.series_p, self, triggered=self.edit_series)
-
         self.action_edit_season = QAction(
             texts.season_p, self, triggered=self.edit_season)
         self.action_edit_rewrite_html = QAction(
             texts.rewrite_html, self, triggered=self.rewrite_html)
 
-        self.actions_search_series_title = QAction(
-            texts.title_s, self, triggered=self.search_series_title)
+        self.action_edit_movie_cast = QAction(
+            texts.cast_s, self, triggered=self.edit_movie_cast)
+        self.action_edit_series_cast = QAction(
+            texts.cast_s, self, triggered=self.edit_series_cast)
 
         # AddAction Edit
         self.menu_edit.addAction(self.action_edit_movie)
+        self.menu_edit.addAction(self.menu_edit_movie_others.menuAction())
+        self.menu_edit_movie_others.addAction(self.action_edit_movie_cast)
+
         self.menu_edit.addAction(self.action_edit_series)
+        self.menu_edit.addAction(self.menu_edit_series_others.menuAction())
+        self.menu_edit_series_others.addAction(self.action_edit_series_cast)
+
         self.menu_edit.addAction(self.action_edit_season)
         self.menu_edit.addAction(self.action_edit_rewrite_html)
 
@@ -122,11 +130,10 @@ class MSCollection(QMainWindow):
             texts.title_s, self, triggered=self.search_movie_title)
         self.actions_view_movie_web_url = QAction(
             texts.lb_url, self, triggered=self.view_movie_web_url)
-
+        self.actions_search_series_title = QAction(
+            texts.title_s, self, triggered=self.search_series_title)
         self.actions_view_series_web_url = QAction(
             texts.lb_url, self, triggered=self.view_series_web_url)
-        self.actions_view_series_search_url = QAction(
-            texts.lb_search_url, self, triggered=self.view_series_search_url)
 
         # AddAction Search
         self.menu_search_movies.addAction(self.actions_search_movie_title)
@@ -172,6 +179,17 @@ class MSCollection(QMainWindow):
         subwindow = EditSeason(self)
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
+
+    def edit_movie_cast(self):
+        subwindow = EditCast(self, 'movie')
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def edit_series_cast(self):
+        subwindow = EditCast(self, 'series')
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
 
     def rewrite_html(self):
         subwindow = RewriteHtml(self)
