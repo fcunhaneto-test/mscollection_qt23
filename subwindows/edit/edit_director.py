@@ -302,16 +302,7 @@ class EditDirector(QMdiSubWindow):
 
     # Help
     def help(self):
-        """
-        Call for help.
-
-        :return: Show a help view.
-        """
-        # I have to perform help preview functions on the main because the bug
-        # "stack_trace posix.cc (699)" does not let the page find its directory.
-        dir = os.getcwd()
-        url = 'file:///' + dir + '/views_help/help_edit_director_creator.html'
-        self.main.views_help(url, texts.help_edit_cast)
+        pass
 
     def closeEvent(self, event):
         self.session.close()

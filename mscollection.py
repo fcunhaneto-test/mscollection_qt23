@@ -23,6 +23,8 @@ from subwindows.edit.edit_director import EditDirector
 from subwindows.edit.edit_creator import EditCreator
 from subwindows.edit.edit_others import EditOthers
 
+from subwindows.edit.edit_season_cast import EditSeasonCast
+
 from rewrite_html.rewrite_html import RewriteHtml
 
 # Searchs
@@ -144,6 +146,10 @@ class MSCollection(QMainWindow):
         self.action_edit_keyword.triggered.connect(
             lambda: self.edit_others('keyword'))
 
+        text = texts.season_s + ' ' + texts.cast_s
+        self.action_edit_season_cast = QAction(
+            text, self, triggered=self.edit_season_cast)
+
         # AddAction Edit
         self.menu_edit.addAction(self.action_edit_movie)
         self.menu_edit.addAction(self.menu_edit_movie_others.menuAction())
@@ -164,6 +170,7 @@ class MSCollection(QMainWindow):
         self.menu_edit_general.addAction(self.action_edit_keyword)
 
         self.menu_edit.addAction(self.action_edit_season)
+        self.menu_edit.addAction(self.action_edit_season_cast)
         self.menu_edit.addAction(self.action_edit_rewrite_html)
 
         # Actions Search ######################################################
@@ -233,6 +240,11 @@ class MSCollection(QMainWindow):
 
     def edit_series_cast(self):
         subwindow = EditCast(self, 'series')
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def edit_season_cast(self):
+        subwindow = EditSeasonCast(self)
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
 

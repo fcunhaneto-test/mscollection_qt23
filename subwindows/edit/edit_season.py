@@ -49,7 +49,8 @@ class EditSeason(QMdiSubWindow):
         self.vbox_main = QVBoxLayout(self.subwindow)
         self.vbox_main.setContentsMargins(20, 20, 20, 20)
 
-        self.hbox_2 = hbox_create([])
+        self.hbox_2 = QHBoxLayout()
+        self.hbox_2.setSpacing(10)
 
         # Series Season Num Year
         self.lb_series = QLabel(texts.lb_select_series)
@@ -144,10 +145,9 @@ class EditSeason(QMdiSubWindow):
         line_h_3 = line_h_create('2px', '#7777FF')
         self.fm_left.setWidget(5, QFormLayout.FieldRole, line_h_2)
         self.fm_left.setWidget(6, QFormLayout.FieldRole, line_h_3)
-        self.hbox_pb_main = QHBoxLayout()
 
         self.pb_save = pb_create(texts.pb_save)
-        self.pb_save.clicked.connect(self.start_save)
+        self.pb_save.clicked.connect(self.save_season_episodes)
         self.pb_save.setShortcut('Ctrl+S')
 
         self.pb_clear = pb_create(texts.pb_clear)
@@ -166,11 +166,10 @@ class EditSeason(QMdiSubWindow):
         self.pb_leave.clicked.connect(self.close)
         self.pb_leave.setShortcut('Ctrl+Q')
 
-        self.hbox_pb_main.addWidget(self.pb_save)
-        self.hbox_pb_main.addWidget(self.pb_clear)
-        self.hbox_pb_main.addWidget(self.pb_help)
-        self.hbox_pb_main.addWidget(self.pb_delete)
-        self.hbox_pb_main.addWidget(self.pb_leave)
+        self.hbox_pb_main = hbox_create([
+            self.pb_save, self.pb_clear, self.pb_help,
+            self.pb_delete, self.pb_leave
+        ])
 
         self.fm_left.setLayout(7, QFormLayout.FieldRole, self.hbox_pb_main)
 
@@ -309,11 +308,16 @@ class EditSeason(QMdiSubWindow):
         try:
             self.session.add(self.season)
             self.session.commit()
+            text = texts.msg_edit_season_ok(name_s, self.le_season_num.text())
+            show_msg(
+                texts.edit_ok, text, QMessageBox.Information, QMessageBox.Ok)
         except (IntegrityError, DBAPIError) as error:
             self.session.rollback()
             self.session.commit()
-
-            return self.errors['db error'], name_s
+            text = texts.msg_insert_season_error(
+                name_s, self.le_season_num.text())
+            show_msg(texts.insert_error, text, QMessageBox.Critical,
+                     QMessageBox.Close, str(error))
 
         episodes = []
         i = 0
@@ -328,31 +332,17 @@ class EditSeason(QMdiSubWindow):
         try:
             self.session.add_all(episodes)
             self.session.commit()
+            text = texts.msg_edit_epidsode_ok(name_s, self.le_season_num.text())
+            show_msg(
+                texts.edit_ok, text, QMessageBox.Information, QMessageBox.Ok)
+            self.clear()
         except (IntegrityError, DBAPIError) as error:
             self.session.rollback()
             self.session.commit()
-            print(str(error))
-            return self.errors['db error'], name_s
-
-        return self.errors['no error'], name_s
-
-    # Start Save
-    def start_save(self):
-        """
-        Start function save and show messages if errors happen.
-        """
-        error, name = self.save_season_episodes()
-        if error == self.errors['db error']:
-            text = texts.msg_insert_season_error(name,
-                                                 self.le_season_num.text())
+            text = texts.msg_edit_episode_error(
+                name_s,  self.le_season_num.text())
             show_msg(texts.insert_error, text, QMessageBox.Critical,
                      QMessageBox.Close, str(error))
-        elif error == self.errors['no error']:
-            text = texts.msg_insert_season_ok(name, self.le_season_num.text())
-            show_msg(texts.insert_ok, text, QMessageBox.Information,
-                     QMessageBox.Close)
-
-        self.clear()
 
     # Delete
     def delete_season(self):
@@ -620,16 +610,7 @@ class EditSeason(QMdiSubWindow):
 
     # Help
     def help(self):
-        """
-        Call for help.
-
-        :return: Show a help view.
-        """
-        # I have to perform help preview functions on the main because the bug
-        # "stack_trace posix.cc (699)" does not let the page find its directory.
-        dir = os.getcwd()
-        url = 'file:///' + dir + '/views_help/help_insert_edit_season.html'
-        self.main.views_help(url, texts.help_insert_movie)
+        pass
 
     # Close Event
     def closeEvent(self, event):

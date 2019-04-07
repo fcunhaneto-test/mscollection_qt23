@@ -206,9 +206,6 @@ class InsertSeason(QMdiSubWindow):
         self.hbox_2.addLayout(self.vbox_right)
         self.vbox_main.addLayout(self.hbox_2)
 
-        # Episode
-        self.vbox_episode = QVBoxLayout()
-
         # Episode Add Row
         self.lb_episode = QLabel(texts.episode_s)
         self.pb_add_row_episode = pb_create('+', 12, 30, 50)
@@ -248,8 +245,10 @@ class InsertSeason(QMdiSubWindow):
 
         line_h_2 = line_h_create('2px', '#000000')
 
+        self.vbox_episode = QVBoxLayout()
         self.vbox_episode.addLayout(self.hbox_episode)
         self.vbox_episode.addWidget(self.table_episode)
+
         self.vbox_main.addWidget(line_h_2)
         self.vbox_main.addLayout(self.vbox_episode)
 
@@ -346,7 +345,7 @@ class InsertSeason(QMdiSubWindow):
         except SQLAlchemyError as error:
             self.session.rollback()
             self.session.commit()
-            text = texts.msg_insert_season_ok(name_s, self.le_season_num.text())
+            text = texts.msg_insert_episode_error(name_s, self.le_season_num.text())
             show_msg(texts.insert_ok, text, QMessageBox.Information,
                      QMessageBox.Close)
 
@@ -366,7 +365,8 @@ class InsertSeason(QMdiSubWindow):
                     try:
                         self.session.add(cast)
                         self.session.commit()
-                    # If except most probably is because cast exist so we try to get it
+                    # If except most probably is because cast exist so we try
+                    # to get it
                     except IntegrityError:
                         self.session.rollback()
                         self.session.commit()
@@ -766,16 +766,7 @@ class InsertSeason(QMdiSubWindow):
 
     # Help
     def help(self):
-        """
-        Call for help.
-
-        :return: Show a help view.
-        """
-        # I have to perform help preview functions on the main because the bug
-        # "stack_trace posix.cc (699)" does not let the page find its directory.
-        dir = os.getcwd()
-        url = 'file:///' + dir + '/views_help/help_insert_edit_season.html'
-        self.main.views_help(url, texts.help_insert_movie)
+        pass
 
     # Close Event
     def closeEvent(self, event):

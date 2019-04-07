@@ -783,16 +783,7 @@ class InsertSeries(QMdiSubWindow):
 
     # Help
     def help(self):
-        """
-        Call for help.
-
-        :return: Show a help view.
-        """
-        # I have to perform help preview functions on the main because the bug
-        # "stack_trace posix.cc (699)" does not let the page find its directory.
-        dir = os.getcwd()
-        url = 'file:///' + dir + '/views_help/help_insert_series_series.html'
-        self.main.views_help(url, texts.help_insert_series)
+        pass
 
     # Close Event
     def closeEvent(self, event):

@@ -3,7 +3,7 @@ import datetime
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QFont, QIcon, QPixmap
-from PyQt5.QtWidgets import QMdiSubWindow, QTableWidget, QWidget, \
+from PyQt5.QtWidgets import QMdiSubWindow, QTableWidget, QWidget, QHBoxLayout, \
     QTableWidgetItem, QVBoxLayout, QGridLayout, QLabel, QMessageBox, \
     QSpacerItem, QSizePolicy, QCheckBox
 
@@ -13,7 +13,7 @@ from sqlalchemy import desc
 import texts
 
 from db.db_model import Actor, Character, Cast
-from db.db_model import Movie, MovieCast, Series, SeriesCast
+from db.db_model import Series, Season, SeasonCast
 from db.db_settings import Database as DB
 
 from lib.function_lib import cb_create, populate_combobox, hbox_create, \
@@ -23,29 +23,25 @@ from lib.write_movie_html import write_movie_html
 from lib.write_series_html import write_series_html
 
 
-class EditCast(QMdiSubWindow):
-    def __init__(self, main, type):
+class EditSeasonCast(QMdiSubWindow):
+    def __init__(self, main):
         """
         Class for edit movie or series cast.
 
         :param main: Reference for main windows.
         :param type: Type object, movie or series.
         """
-        super(EditCast, self).__init__()
+        super(EditSeasonCast, self).__init__()
 
         self.main = main
-        self.type = type
         self.session = DB.get_session()
         self.id = None
-        self.movie_series_cast = None
+        self.season_cast = None
         self.actor = self.session.query(Actor).order_by(Actor.name).all()
         self.character = self.session.query(Character).order_by(
             Character.name).all()
 
-        if self.type == 'movie':
-            windows_title = texts.movie_p + ' ' + texts.cast_s
-        else:
-            windows_title = texts.series_p + ' ' + texts.cast_s
+        windows_title = texts.season_p + ' ' + texts.cast_s
 
         self.setWindowTitle(windows_title)
         width = int(0.6 * main.frameSize().width())
@@ -59,29 +55,33 @@ class EditCast(QMdiSubWindow):
         self.setWidget(self.subwindow)
 
         font = QFont()
-        font.setPointSize(12)
+        font.setPointSize(11)
 
         # Vbox Main
         self.vbox_main = QVBoxLayout(self.subwindow)
         self.vbox_main.setContentsMargins(20, 20, 20, 20)
         self.vbox_main.setSpacing(10)
 
-        # Select Label and Combobox
-        if self.type == 'movie':
-            select = db_select_all(self.session, Movie)
-            text = texts.movie_s
-        else:
-            select = db_select_all(self.session, Series)
-            text = texts.series_s
-        self.lb_select = QLabel(text)
-        self.lb_select.setFont(font)
-        self.lb_select.setFixedHeight(25)
-        self.cb_select = cb_create('')
-        self.cb_select.setFont(font)
-        self.cb_select.setFixedHeight(30)
-        populate_combobox(self.cb_select, select)
-        self.vbox_main.addWidget(self.lb_select)
-        self.vbox_main.addWidget(self.cb_select)
+        # Series
+        series = db_select_all(self.session, Series)
+
+        self.lb_series = QLabel(texts.series_p)
+        self.lb_series.setFont(font)
+        self.lb_series.setFixedHeight(25)
+        self.cb_series = cb_create('')
+        self.cb_series.setFont(font)
+        self.cb_series.setFixedHeight(30)
+        populate_combobox(self.cb_series, series)
+
+        self.hbox_1 = hbox_create([self.lb_series, self.cb_series])
+
+        self.lb_seasons = QLabel(texts.season_p)
+        self.cb_seasons = cb_create('')
+
+        self.hbox_2 = hbox_create([self.lb_seasons, self.cb_seasons])
+
+        self.vbox_main.addLayout(self.hbox_1)
+        self.vbox_main.addLayout(self.hbox_2)
 
         # Cast Table Add Row
         self.lb_cast = QLabel(texts.cast_s)
@@ -167,31 +167,38 @@ class EditCast(QMdiSubWindow):
 
         self.vbox_main.addLayout(self.grid_layout)
 
-        self.cb_select.currentIndexChanged.connect(self.selected_movie_series)
+        self.cb_series.currentIndexChanged.connect(self.selected_series)
 
-    # Selected Movie Series
-    def selected_movie_series(self):
+    # Selected Series
+    def selected_series(self):
         """
         Search MovieCast or SeriesCast values according object selected.
         """
-        self.cb_select.currentIndexChanged.disconnect()
-        self.id, name = get_combobox_info(self.cb_select)
+        self.cb_series.currentIndexChanged.disconnect()
+        id, name = get_combobox_info(self.cb_series)
+        seasons = self.session.query(Season).\
+            filter(Season.series_id == id).all()
+        self.cb_seasons.clear()
+        self.cb_seasons.addItem('', 0)
+        for season in seasons:
+            self.cb_seasons.addItem(str(season.season_num), season.id)
 
-        if self.type == 'movie':
-            self.movie_series_cast = self.session.query(MovieCast). \
-                filter(MovieCast.movie_id == self.id).\
-                order_by(MovieCast.order, desc(MovieCast.star)).all()
-        else:
-            self.movie_series_cast = self.session.query(SeriesCast). \
-                filter(SeriesCast.series_id == self.id).\
-                order_by(SeriesCast.order, desc(SeriesCast.star)).all()
+        self.cb_seasons.currentIndexChanged.connect(self.selected_season)
 
-        for mc in self.movie_series_cast:
-            actor = mc.cast.actors
-            character = mc.cast.characters
-            star = mc.star
-            order = mc.order
-            self.set_table_values(mc.id, actor, character, order, star)
+    # Selected Season
+    def selected_season(self):
+        self.cb_seasons.currentIndexChanged.disconnect()
+        self.id, name = get_combobox_info(self.cb_seasons)
+        self.season_cast = self.session.query(SeasonCast). \
+                filter(SeasonCast.season_id == self.id).\
+                order_by(SeasonCast.order, desc(SeasonCast.star)).all()
+
+        for sc in self.season_cast:
+            actor = sc.cast.actors
+            character = sc.cast.characters
+            star = sc.star
+            order = sc.order
+            self.set_table_values(sc.id, actor, character, order, star)
 
     # Save Cast
     def save_cast(self):
@@ -200,14 +207,8 @@ class EditCast(QMdiSubWindow):
         """
         for i in range(self.ch_del_count):
             if self.chbox_del[i].isChecked():
-                if self.type == 'movie':
-                    result = self.session.query(MovieCast). \
-                        filter(MovieCast.id == self.movie_series_cast[i].id). \
-                        delete()
-                else:
-                    result = self.session.query(SeriesCast). \
-                        filter(SeriesCast.id == self.movie_series_cast[i].id). \
-                        delete()
+                result = self.session.query(SeasonCast).\
+                    filter(SeasonCast.id == self.season_cast[i].id).delete()
 
                 if result == 1:
                     self.session.commit()
@@ -216,17 +217,17 @@ class EditCast(QMdiSubWindow):
 
                 continue
 
-            self.movie_series_cast[i].cast.actor_id = db_get_id(
+            self.season_cast[i].cast.actor_id = db_get_id(
                 self.session, self.cb_actor[i], Actor())
 
-            self.movie_series_cast[i].cast.character_id = db_get_id(
+            self.season_cast[i].cast.character_id = db_get_id(
                 self.session, self.cb_character[i], Character())
 
-            self.movie_series_cast[i].order = self.le_order[i].text()
+            self.season_cast[i].order = self.le_order[i].text()
 
-            self.movie_series_cast[i].star = self.chbox_star[i].isChecked()
+            self.season_cast[i].star = self.chbox_star[i].isChecked()
 
-            db_insert_obj(self.session, self.movie_series_cast[i])
+            db_insert_obj(self.session, self.season_cast[i])
 
         for i in range(self.ch_del_count, self.rows):
             actor_id = db_get_id(self.session, self.cb_actor[i], Actor())
@@ -249,45 +250,26 @@ class EditCast(QMdiSubWindow):
                         Cast.character_id == character_id).first()
 
                 if cast:
-                    if self.type == 'movie':
-                        movie_series_cast = MovieCast(
-                            movie_id=self.id,
-                            cast_id=cast.id,
-                            order=self.le_order[i].text(),
-                            star=self.chbox_star[i].isChecked()
-                        )
-                    else:
-                        movie_series_cast = SeriesCast(
-                            series_id=self.id,
-                            cast_id=cast.id,
-                            order=self.le_order[i].text(),
-                            star=self.chbox_star[i].isChecked()
-                        )
+                    series_cast = SeasonCast(
+                        season_id=self.id,
+                        cast_id=cast.id,
+                        order=self.le_order[i].text(),
+                        star=self.chbox_star[i].isChecked()
+                    )
 
-                    db_insert_obj(self.session, movie_series_cast)
+                    db_insert_obj(self.session, series_cast)
 
-        movie_series = self.cb_select.currentText()
-        name = movie_series + ' ' + texts.cast_s
+        series = self.cb_series.currentText()
+        name = series + ' ' + texts.cast_s
         text = texts.msg_edit_ok(name)
         show_msg(
             texts.edit_ok, text, QMessageBox.Information, QMessageBox.Close)
         self.clear()
 
-        ms = None
-        if self.type == 'movie':
-            ms = self.session.query(Movie).get(self.id)
-        elif self.type == 'series':
-            ms = self.session.query(Series).get(self.id)
+        sc = None
+        sc = self.session.query(Season).get(self.id)
 
-        self.session.add(ms)
-        self.session.commit()
-
-        if self.type == 'movie':
-            ms.view = write_movie_html(self.session, ms)
-        elif self.type == 'series':
-            ms.view = write_series_html(self.session, ms)
-
-        self.session.add(ms)
+        self.session.add(sc)
         self.session.commit()
 
     # Set Table Values
@@ -333,7 +315,7 @@ class EditCast(QMdiSubWindow):
         """
         Add rows in table.
 
-        :param order: MovieCast or SeriesCast value for order column
+        :param order: SesonCast value for order column
         :param star: MovieCast or SeriesCast value for star column
         :param mc: MovieCast or SeriesCast value for id column
         """
@@ -452,8 +434,8 @@ class EditCast(QMdiSubWindow):
         self.chbox_star = []
         self.chbox_del = []
         self.session.expire_all()
-        self.cb_select.setCurrentIndex(0)
-        self.cb_select.currentIndexChanged.connect(self.selected_movie_series)
+        self.cb_series.setCurrentIndex(0)
+        self.cb_series.currentIndexChanged.connect(self.selected_series)
         self.actor = self.session.query(Actor).order_by(Actor.name).all()
         self.character = self.session.query(Character).order_by(
             Character.name).all()

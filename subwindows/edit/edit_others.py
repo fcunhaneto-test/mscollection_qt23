@@ -256,6 +256,10 @@ class EditOthers(QMdiSubWindow):
         self.le.returnPressed.disconnect()
         self.cb_select.currentIndexChanged.connect(self.obj_selected)
 
+    # Help
+    def help(self):
+        pass
+
     # Close Event
     def closeEvent(self, event):
         self.session.close()

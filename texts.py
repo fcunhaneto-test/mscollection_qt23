@@ -223,10 +223,34 @@ def msg_insert_season_ok(name, num):
            '</span> foi inserido com sucesso.</p></body></html>'
     return text
 
+def msg_edit_season_ok(name, num):
+    text = '<html><body><p style="color:#000000;">' \
+           '<span style="color:#3a90c7;">' + name + ' ' + num + \
+           '</span> foi editado com sucesso.</p></body></html>'
+    return text
+
 def msg_insert_epidsode_ok(name, num):
     text = '<html><body><p style="color:#000000;">' \
            '<span style="color:#3a90c7;">' + name + ' ' + num + \
            '</span> episódios inseridos com sucesso.</p></body></html>'
+    return text
+
+def msg_edit_epidsode_ok(name, num):
+    text = '<html><body><p style="color:#000000;">' \
+           '<span style="color:#3a90c7;">' + name + ' ' + num + \
+           '</span> episódios editados com sucesso.</p></body></html>'
+    return text
+
+def msg_insert_episode_error(name, num):
+    text = '<html><body><p style="color:#000000;">Não foi possível inserir ' \
+           '<span style="color:#3a90c7;">' + name + ' ' + num + \
+           '.</span></p></body></html>'
+    return text
+
+def msg_edit_episode_error(name, num):
+    text = '<html><body><p style="color:#000000;">Não foi possível editar ' \
+           '<span style="color:#3a90c7;">' + name + ' ' + num + \
+           '.</span></p></body></html>'
     return text
 
 def msg_insert_erro(name):
@@ -237,6 +261,12 @@ def msg_insert_erro(name):
 
 def msg_insert_season_error(name, num):
     text = '<html><body><p style="color:#000000;"> Erro ao inserir ' \
+           '<span style="color:#3a90c7;">' + name + ' ' + num + \
+           '</span> no banco de dados.</p></body></html>'
+    return text
+
+def msg_edit_season_error(name, num):
+    text = '<html><body><p style="color:#000000;"> Erro ao editar ' \
            '<span style="color:#3a90c7;">' + name + ' ' + num + \
            '</span> no banco de dados.</p></body></html>'
     return text
