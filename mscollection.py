@@ -30,12 +30,19 @@ from rewrite_html.rewrite_html import RewriteHtml
 # Searchs
 from subwindows.search.search_movie_title import SearchMovieTitle
 from subwindows.search.search_series_title import SearchSeriesTitle
+from subwindows.search.search_movie_box import SearchMovieBox
+
+from subwindows.search.search_ms_category import SearchMSCategory
+from subwindows.search.search_ms_keyword import SearchMSKeyword
+from subwindows.search.search_ms_media_year import SearchMSMediaYear
+
 
 from subwindows.search.view_select_title import ViewSelectTitle
 from subwindows.search.view_movie_web_url import ViewMovieUrl
 from subwindows.search.view_series_web_url import ViewSeriesUrl
 from subwindows.search.view_movie_search_url import  ViewMovieSearchUrl
 from subwindows.search.view_series_search_url import  ViewSeriesSearchUrl
+
 
 class MSCollection(QMainWindow):
     """
@@ -180,12 +187,45 @@ class MSCollection(QMainWindow):
             texts.lb_url, self, triggered=self.view_movie_web_url)
         self.actions_search_series_title = QAction(
             texts.title_s, self, triggered=self.search_series_title)
+        self.actions_search_movie_box = QAction(
+            texts.box, self, triggered=self.search_movie_box)
+        self.actions_search_movie_category = QAction(texts.category_p, self)
+        self.actions_search_movie_category.triggered.connect(
+            lambda: self.search_ms_category('movie'))
+        self.actions_search_series_category = QAction(texts.category_p, self)
+        self.actions_search_series_category.triggered.connect(
+            lambda: self.search_ms_category('series'))
+        self.actions_search_movie_keyword = QAction(texts.keyword, self)
+        self.actions_search_movie_keyword.triggered.connect(
+            lambda: self.search_ms_keyword('movie'))
+        self.actions_search_series_keyword = QAction(texts.keyword, self)
+        self.actions_search_series_keyword.triggered.connect(
+            lambda: self.search_ms_keyword('series'))
+        text = texts.media_s + '/' + texts.year_s
+        self.actions_search_movie_my = QAction(text, self)
+        self.actions_search_movie_my.triggered.connect(
+            lambda: self.search_ms_my('movie'))
+        self.actions_search_series_my = QAction(text, self)
+        self.actions_search_series_my.triggered.connect(
+            lambda: self.search_ms_my('series'))
+
         self.actions_view_series_web_url = QAction(
             texts.lb_url, self, triggered=self.view_series_web_url)
 
+
         # AddAction Search
         self.menu_search_movies.addAction(self.actions_search_movie_title)
+        self.menu_search_movies.addAction(self.actions_search_movie_box)
+        self.menu_search_movies.addAction(self.actions_search_movie_category)
+        self.menu_search_movies.addAction(self.actions_search_movie_keyword)
+        self.menu_search_movies.addAction(self.actions_search_movie_my)
+
+
         self.menu_search_series.addAction(self.actions_search_series_title)
+        self.menu_search_series.addAction(self.actions_search_series_category)
+        self.menu_search_series.addAction(self.actions_search_series_keyword)
+        self.menu_search_series.addAction(self.actions_search_series_my)
+
 
         self.menu_search.addAction(self.menu_search_movies.menuAction())
         self.menu_search.addAction(self.menu_search_series.menuAction())
@@ -275,6 +315,26 @@ class MSCollection(QMainWindow):
 
     def search_series_title(self):
         subwindow = SearchSeriesTitle(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def search_movie_box(self, type):
+        subwindow = SearchMovieBox(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def search_ms_category(self, type):
+        subwindow = SearchMSCategory(self, type)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def search_ms_keyword(self, type):
+        subwindow = SearchMSKeyword(self, type)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def search_ms_my(self, type):
+        subwindow = SearchMSMediaYear(self, type)
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
 

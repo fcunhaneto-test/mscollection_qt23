@@ -5,28 +5,28 @@ from PyQt5.QtWidgets import QMdiSubWindow, QWidget, QVBoxLayout, \
 
 import texts
 
-from db.db_model import Movie
+from db.db_model import Movie, Box
 from db.db_settings import Database as DB
 
 from lib.function_lib import cb_create, populate_combobox, hbox_create, \
     pb_create, le_create, db_select_all, get_combobox_info
 
 
-class SearchMovieTitle(QMdiSubWindow):
+class SearchMovieBox(QMdiSubWindow):
     def __init__(self, main):
         """
         Search movie by title.
 
         :param main: Reference for main windows.
         """
-        super(SearchMovieTitle, self).__init__()
+        super(SearchMovieBox, self).__init__()
 
         self.session = DB.get_session()
         self.main = main
         self.row_select = -1
 
         windows_title = texts.search + ' ' + texts.movie_s + ' ' + \
-                        texts.for_ + ' ' + texts.title_p
+                        texts.for_ + ' ' + texts.box
 
         self.setWindowTitle(windows_title)
         self.width = int(0.8 * main.frameSize().width())
@@ -43,11 +43,11 @@ class SearchMovieTitle(QMdiSubWindow):
         self.vbox_main.setContentsMargins(20, 20, 20, 20)
 
         # Title
-        self.lb_title = QLabel(texts.title_s)
-        self.lb_title.setMaximumSize(QSize(100, 25))
-        movie = db_select_all(self.session, Movie)
-        self.cb_title = cb_create()
-        populate_combobox(self.cb_title, movie)
+        self.lb_box = QLabel(texts.box)
+        self.lb_box.setMaximumSize(QSize(100, 25))
+        box = db_select_all(self.session, Box)
+        self.cb_box = cb_create()
+        populate_combobox(self.cb_box, box)
 
         # Words
         text = texts.or_s + ' ' + texts.with_the_p + ' ' + texts.term_p
@@ -57,7 +57,7 @@ class SearchMovieTitle(QMdiSubWindow):
         self.le_term.editingFinished.connect(self.query_term)
 
         # HBoxSearch
-        self.hbox_search = hbox_create([self.lb_title, self.cb_title,
+        self.hbox_search = hbox_create([self.lb_box, self.cb_box,
                                         self.lb_term, self.le_term])
         spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.hbox_search.addItem(spacer)
@@ -92,12 +92,12 @@ class SearchMovieTitle(QMdiSubWindow):
         self.table.setObjectName('table-search')
         self.rows = 0
         self.clear_table()
-        query = self.session.query(Movie).all()
-        self.set_table(query)
+        movies = self.session.query(Movie).filter(Movie.box_id.isnot(None)).all()
+        self.set_table(movies)
 
         self.vbox_main.addWidget(self.table)
 
-        self.cb_title.currentIndexChanged.connect(self.query_title)
+        self.cb_box.currentIndexChanged.connect(self.query_box)
 
     # Resize Event
     def resizeEvent(self, event):
@@ -130,7 +130,7 @@ class SearchMovieTitle(QMdiSubWindow):
 
         headers = [
             texts.title_s,
-            texts.original_title_s,
+            texts.box,
             texts.media_s,
             texts.lb_time,
             texts.year_s,
@@ -184,9 +184,9 @@ class SearchMovieTitle(QMdiSubWindow):
             self.table.item(self.rows, 0).setForeground(QColor(55, 34, 243))
             self.table.item(self.rows, 0).setFont(font)
 
-            if movie.original_name:
+            if movie.box_id:
                 self.table.setItem(self.rows, 1,
-                                   QTableWidgetItem(movie.original_name))
+                                   QTableWidgetItem(movie.box.name))
             else:
                 self.table.setItem(self.rows, 1, QTableWidgetItem(''))
 
@@ -221,56 +221,19 @@ class SearchMovieTitle(QMdiSubWindow):
 
         self.le_total.setText(str(self.rows))
 
-    def set_query_title(self, movie):
-        """
-        Set table with movies values search in database.
-
-        :param movie: The movies values from a database search.
-        """
-        self.clear_table()
-        self.table.insertRow(self.rows)
-
-        self.table.setItem(self.rows, 0, QTableWidgetItem(movie.name))
-        font = QFont()
-        font.setUnderline(True)
-        self.table.item(self.rows, 0).setForeground(QColor(55, 34, 243))
-        self.table.item(self.rows, 0).setFont(font)
-
-        if movie.original_name:
-            self.table.setItem(self.rows, 1,
-                               QTableWidgetItem(movie.original_name))
-        else:
-            self.table.setItem(self.rows, 1, QTableWidgetItem(''))
-
-        if movie.media:
-            self.table.setItem(self.rows, 2,
-                               QTableWidgetItem(movie.media.name))
-        else:
-            self.table.setItem(self.rows, 2, QTableWidgetItem(''))
-
-        self.table.setItem(self.rows, 3, QTableWidgetItem(movie.time))
-        self.table.setItem(self.rows, 4, QTableWidgetItem(movie.year))
-        self.table.setItem(self.rows, 5, QTableWidgetItem(str(movie.id)))
-
-        self.table.cellClicked.connect(self.view_obj)
-
-        self.rows += 1
-
-        self.table.setAlternatingRowColors(True)
-        self.table.setStyleSheet(
-            "alternate-background-color: #F0FAE4; background-color: #ffffff;")
-
-        self.le_total.setText(str(self.rows))
 
     # Query
-    def query_title(self):
+    def query_box(self):
         """
         Search movie by selected title in QCombobox.
         """
-        id, name = get_combobox_info(self.cb_title)
-        movie = self.session.query(Movie).get(id)
+        id, name = get_combobox_info(self.cb_box)
+        if id != 0:
+            movies = self.session.query(Movie).filter(Movie.box_id == id).all()
+        else:
+            movies = self.session.query(Movie).filter(Movie.box_id.is_(None)).all()
 
-        self.set_query_title(movie)
+        self.set_table(movies)
 
     def query_term(self):
         """
@@ -280,8 +243,11 @@ class SearchMovieTitle(QMdiSubWindow):
         queries = []
         for word in words:
             word = '%{0}%'.format(word)
-            query = self.session.query(Movie)\
-                .filter(Movie.name.ilike(word)).all()
+            box = self.session.query(Box).filter(Box.name.ilike(word)).all()
+            lid = []
+            for b in box:
+                lid.append(b.id)
+            query = self.session.query(Movie).filter(Movie.box_id.in_(lid)).all()
             queries += query
 
         self.set_table(queries)
@@ -290,12 +256,12 @@ class SearchMovieTitle(QMdiSubWindow):
         """
         Clear all values in windows.
         """
-        self.cb_title.currentIndexChanged.disconnect()
-        self.cb_title.setCurrentIndex(0)
+        self.cb_box.currentIndexChanged.disconnect()
+        self.cb_box.setCurrentIndex(0)
         self.clear_table()
-        query = self.session.query(Movie).all()
-        self.set_table(query)
-        self.cb_title.currentIndexChanged.connect(self.query_title)
+        movies = self.session.query(Movie).filter(Movie.box_id.isnot(None)).all()
+        self.set_table(movies)
+        self.cb_box.currentIndexChanged.connect(self.query_box)
 
     # Close Event
     def closeEvent(self, event):

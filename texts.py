@@ -145,6 +145,9 @@ with_term_tt = 'Pesquisa com os termos que você digitar.'
 with_title_term_tt = 'Buscar título com os termos:'
 with_episode_term_tt = 'ou episódios com os termos:'
 time_tt = 'Tempo de duração do filme.'
+enter_required = '<html><head/><body>' \
+                 '<p>Entre com o ano e pressione enter para pesquisar</p>' \
+                 '</body></html>'
 
 director_tt = '<html><head/><body>' \
               '<p>Para editar os diretores vá em Filmes Outros &rarr; ' \

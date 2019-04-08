@@ -34,6 +34,11 @@ QTableView#table-episode::item {
     padding: 10px 5px;
 }
 
+QTableView#table-search::item {
+    border: 0px;
+    padding: 0 5px;
+}
+
 QHeaderView::section {
     height: 30px;
     background-color: #E6E6E6;

@@ -141,6 +141,7 @@ def write_movie_html(session, movie):
            html_media + html_original_name + html_actors + html_end
 
     title = movie.name.lower()
+
     char = [' ', '.', '/', '\\']
     for c in char:
         title = title.replace(c, '_')
