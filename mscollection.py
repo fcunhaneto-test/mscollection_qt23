@@ -27,22 +27,20 @@ from subwindows.edit.edit_season_cast import EditSeasonCast
 
 from rewrite_html.rewrite_html import RewriteHtml
 
-# Searchs
-from subwindows.search.search_movie_title import SearchMovieTitle
-from subwindows.search.search_series_title import SearchSeriesTitle
+# Search
 from subwindows.search.search_movie_box import SearchMovieBox
 
+from subwindows.search.search_ms_title import SearchMSTitle
 from subwindows.search.search_ms_category import SearchMSCategory
 from subwindows.search.search_ms_keyword import SearchMSKeyword
 from subwindows.search.search_ms_media_year import SearchMSMediaYear
 
-
-from subwindows.search.view_select_title import ViewSelectTitle
+# Views
 from subwindows.search.view_movie_web_url import ViewMovieUrl
 from subwindows.search.view_series_web_url import ViewSeriesUrl
 from subwindows.search.view_movie_search_url import  ViewMovieSearchUrl
 from subwindows.search.view_series_search_url import  ViewSeriesSearchUrl
-
+from subwindows.search.view_select_title import ViewSelectTitle
 
 class MSCollection(QMainWindow):
     """
@@ -105,8 +103,10 @@ class MSCollection(QMainWindow):
         # Actions Insert ######################################################
         self.action_insert_movie = QAction(
             texts.movie_p, self, triggered=self.insert_movie)
+
         self.action_insert_series = QAction(
             texts.series_p, self, triggered=self.insert_series)
+
         self.action_insert_season = QAction(
             texts.season_p, self, triggered=self.insert_season)
 
@@ -118,37 +118,47 @@ class MSCollection(QMainWindow):
         # Actions Edit ######################################################
         self.action_edit_movie = QAction(
             texts.movie_p, self, triggered=self.edit_movie)
+
         self.action_edit_series = QAction(
             texts.series_p, self, triggered=self.edit_series)
+
         self.action_edit_season = QAction(
             texts.season_p, self, triggered=self.edit_season)
+
         self.action_edit_rewrite_html = QAction(
             texts.rewrite_html, self, triggered=self.rewrite_html)
 
         self.action_edit_movie_cast = QAction(
             texts.cast_s, self, triggered=self.edit_movie_cast)
+
         self.action_edit_series_cast = QAction(
             texts.cast_s, self, triggered=self.edit_series_cast)
 
         self.action_edit_director = QAction(texts.director_s, self,
                                             triggered=self.edit_director)
+
         self.action_edit_creator = QAction(texts.creator_s, self,
                                            triggered=self.edit_creator)
 
         self.action_edit_box = QAction(texts.box, self)
         self.action_edit_box.triggered.connect(lambda: self.edit_others('box'))
+
         self.action_edit_category = QAction(texts.category_p, self)
         self.action_edit_category.triggered.connect(
             lambda: self.edit_others('category'))
+
         self.action_edit_media = QAction(texts.media_s, self)
         self.action_edit_media.triggered.connect(
             lambda: self.edit_others('media'))
+
         self.action_edit_actor = QAction(texts.actor_s, self)
         self.action_edit_actor.triggered.connect(
             lambda: self.edit_others('actor'))
+
         self.action_edit_character = QAction(texts.character_s, self)
         self.action_edit_character.triggered.connect(
             lambda: self.edit_others('character'))
+
         self.action_edit_keyword = QAction(texts.keyword, self)
         self.action_edit_keyword.triggered.connect(
             lambda: self.edit_others('keyword'))
@@ -181,37 +191,47 @@ class MSCollection(QMainWindow):
         self.menu_edit.addAction(self.action_edit_rewrite_html)
 
         # Actions Search ######################################################
-        self.actions_search_movie_title = QAction(
-            texts.title_s, self, triggered=self.search_movie_title)
         self.actions_view_movie_web_url = QAction(
             texts.lb_url, self, triggered=self.view_movie_web_url)
-        self.actions_search_series_title = QAction(
-            texts.title_s, self, triggered=self.search_series_title)
-        self.actions_search_movie_box = QAction(
-            texts.box, self, triggered=self.search_movie_box)
-        self.actions_search_movie_category = QAction(texts.category_p, self)
-        self.actions_search_movie_category.triggered.connect(
-            lambda: self.search_ms_category('movie'))
-        self.actions_search_series_category = QAction(texts.category_p, self)
-        self.actions_search_series_category.triggered.connect(
-            lambda: self.search_ms_category('series'))
-        self.actions_search_movie_keyword = QAction(texts.keyword, self)
-        self.actions_search_movie_keyword.triggered.connect(
-            lambda: self.search_ms_keyword('movie'))
-        self.actions_search_series_keyword = QAction(texts.keyword, self)
-        self.actions_search_series_keyword.triggered.connect(
-            lambda: self.search_ms_keyword('series'))
-        text = texts.media_s + '/' + texts.year_s
-        self.actions_search_movie_my = QAction(text, self)
-        self.actions_search_movie_my.triggered.connect(
-            lambda: self.search_ms_my('movie'))
-        self.actions_search_series_my = QAction(text, self)
-        self.actions_search_series_my.triggered.connect(
-            lambda: self.search_ms_my('series'))
 
         self.actions_view_series_web_url = QAction(
             texts.lb_url, self, triggered=self.view_series_web_url)
 
+        self.actions_search_movie_box = QAction(
+            texts.box, self, triggered=self.search_movie_box)
+
+        self.actions_search_movie_title = QAction(texts.title_p, self)
+        self.actions_search_movie_title.triggered.connect(
+            lambda: self.search_ms_title('movie'))
+
+        self.actions_search_series_title = QAction(texts.title_p, self)
+        self.actions_search_series_title.triggered.connect(
+            lambda: self.search_ms_title('series'))
+
+        self.actions_search_movie_category = QAction(texts.category_p, self)
+        self.actions_search_movie_category.triggered.connect(
+            lambda: self.search_ms_category('movie'))
+
+        self.actions_search_series_category = QAction(texts.category_p, self)
+        self.actions_search_series_category.triggered.connect(
+            lambda: self.search_ms_category('series'))
+
+        self.actions_search_movie_keyword = QAction(texts.keyword, self)
+        self.actions_search_movie_keyword.triggered.connect(
+            lambda: self.search_ms_keyword('movie'))
+
+        self.actions_search_series_keyword = QAction(texts.keyword, self)
+        self.actions_search_series_keyword.triggered.connect(
+            lambda: self.search_ms_keyword('series'))
+
+        text = texts.media_s + '/' + texts.year_s
+        self.actions_search_movie_my = QAction(text, self)
+        self.actions_search_movie_my.triggered.connect(
+            lambda: self.search_ms_my('movie'))
+
+        self.actions_search_series_my = QAction(text, self)
+        self.actions_search_series_my.triggered.connect(
+            lambda: self.search_ms_my('series'))
 
         # AddAction Search
         self.menu_search_movies.addAction(self.actions_search_movie_title)
@@ -308,18 +328,13 @@ class MSCollection(QMainWindow):
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
 
-    def search_movie_title(self):
-        subwindow = SearchMovieTitle(self)
-        self.mdi_area.addSubWindow(subwindow)
-        subwindow.show()
-
-    def search_series_title(self):
-        subwindow = SearchSeriesTitle(self)
-        self.mdi_area.addSubWindow(subwindow)
-        subwindow.show()
-
     def search_movie_box(self, type):
         subwindow = SearchMovieBox(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def search_ms_title(self, type):
+        subwindow = SearchMSTitle(self, type)
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
 

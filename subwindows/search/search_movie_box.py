@@ -24,13 +24,15 @@ class SearchMovieBox(QMdiSubWindow):
         self.session = DB.get_session()
         self.main = main
         self.row_select = -1
+        self.movies = self.session.query(Movie).\
+            filter(Movie.box_id == Box.id).oreall()
 
         windows_title = texts.search + ' ' + texts.movie_s + ' ' + \
                         texts.for_ + ' ' + texts.box
 
         self.setWindowTitle(windows_title)
-        self.width = int(0.8 * main.frameSize().width())
-        self.height = int(0.8 * main.frameSize().height())
+        self.width = int(0.9 * main.frameSize().width())
+        self.height = int(0.9 * main.frameSize().height())
         self.setGeometry(0, 0, self.width, self.height)
 
         self.subwindow = QWidget()
@@ -106,8 +108,8 @@ class SearchMovieBox(QMdiSubWindow):
 
         :param event: Window.
         """
-        width = event.size().width()
-        col_width = width - 40
+        self.width = event.size().width()
+        col_width = self.width - 40
         self.table.setColumnWidth(0, 0.35 * col_width)
         self.table.setColumnWidth(1, 0.35 * col_width)
         self.table.setColumnWidth(2, 0.10 * col_width)
@@ -117,6 +119,8 @@ class SearchMovieBox(QMdiSubWindow):
 
         # Important don't delete it
         QMdiSubWindow.resizeEvent(self, event)
+
+        self.set_table(self.bo)
 
     # Clear Table
     def clear_table(self):

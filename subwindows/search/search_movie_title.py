@@ -29,7 +29,7 @@ class SearchMovieTitle(QMdiSubWindow):
                         texts.for_ + ' ' + texts.title_p
 
         self.setWindowTitle(windows_title)
-        self.width = int(0.8 * main.frameSize().width())
+        self.width = int(0.9 * main.frameSize().width())
         self.height = int(0.8 * main.frameSize().height())
         self.setGeometry(0, 0, self.width, self.height)
 

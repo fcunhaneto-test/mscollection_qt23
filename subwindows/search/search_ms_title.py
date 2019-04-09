@@ -1,43 +1,42 @@
 from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtGui import QColor, QFont
-from PyQt5.QtWidgets import QMdiSubWindow, QWidget, QVBoxLayout, QComboBox, \
-    QTableWidget, QTableWidgetItem, QLabel, QSpacerItem, QSizePolicy
-
-from sqlalchemy import desc
+from PyQt5.QtGui import QColor, QFont, QCursor
+from PyQt5.QtWidgets import QMdiSubWindow, QWidget, QVBoxLayout, QTableWidget, \
+    QTableWidgetItem, QLabel, QSpacerItem, QSizePolicy
 
 import texts
 
-from db.db_model import Movie, Series, Media
+from db.db_model import Movie, Series
 from db.db_settings import Database as DB
 
-from lib.function_lib import cb_create, populate_combobox, hbox_create, \
-    pb_create, le_create, db_select_all, get_combobox_info
+from lib.function_lib import cb_create, hbox_create, pb_create, le_create, \
+    get_combobox_info
 
 
-class SearchMSMediaYear(QMdiSubWindow):
+class SearchMSTitle(QMdiSubWindow):
     def __init__(self, main, type):
         """
-        Search movie by title.
+        Search movie or series by title.
 
         :param main: Reference for main windows.
+        :param type: String if is "movie" then search for movie if not search
+        by "series".
         """
-        super(SearchMSMediaYear, self).__init__()
+        super(SearchMSTitle, self).__init__()
 
         self.session = DB.get_session()
-        self.main = main
         self.type = type
+        self.main = main
         self.row_select = -1
 
         if self.type == 'movie':
-            self.obj = self.session.query(Movie).order_by(desc(Movie.year)).all()
+            self.obj = self.session.query(Movie).order_by(Movie.name)
             name = texts.movie_p
         else:
-            self.obj = self.session.query(Series).order_by(desc(Series.year)).all()
+            self.obj = self.session.query(Series).order_by(Series.name)
             name = texts.series_p
 
-        windows_title = texts.search + ' ' + name + ' ' + \
-                        texts.for_ + ' ' + texts.media_s + '/' + texts.year_s
-
+        windows_title = texts.search + ' ' + name + ' ' + texts.for_ \
+                        + ' ' + texts.title_p
         self.setWindowTitle(windows_title)
         self.width = int(0.9 * main.frameSize().width())
         self.height = int(0.9 * main.frameSize().height())
@@ -52,42 +51,28 @@ class SearchMSMediaYear(QMdiSubWindow):
         self.vbox_main = QVBoxLayout(self.subwindow)
         self.vbox_main.setContentsMargins(20, 20, 20, 20)
 
-        # Media
-        self.lb_media = QLabel(texts.media_s)
-        self.lb_media.setMaximumSize(QSize(100, 25))
-        if self.type == 'movie':
-            media = self.session.query(Media).\
-                filter(Media.id == Movie.media_id)
-        else:
-            media = self.session.query(Media). \
-                filter(Media.id == Series.media_id)
-        self.cb_media = cb_create()
-        self.cb_media.setMaximumWidth(300)
-        populate_combobox(self.cb_media, media)
+        # Title
+        self.lb_title = QLabel(texts.title_s)
+        self.lb_title.setMaximumSize(QSize(100, 25))
+        self.cb_title = cb_create()
+        for ms in self.obj:
+            self.cb_title.addItem(ms.name, ms.id)
 
-        # Year
-        self.lb_year = QLabel(texts.year_s)
-        self.cb_year = QComboBox()
-        self.cb_year.addItem('', 0)
-        self.cb_year.setMinimumWidth(100)
+        # Words
+        text = texts.or_s + ' ' + texts.with_the_p + ' ' + texts.term_p
+        self.lb_term = QLabel(text)
+        self.le_term = le_create(30, texts.with_term_tt)
+        self.le_term.setPlaceholderText('pressione enter')
+        #
 
-        if self.type == 'movie':
-            years = self.session.query(Movie.year).distinct().\
-                order_by(desc(Movie.year)).all()
-            years = [y[0] for y in years]
-        else:
-            years = self.session.query(Series.year).distinct().order_by(
-                desc(Series.year)).all()
-            years = [y[0] for y in years]
+        # HBoxSearch
+        self.hbox_search = hbox_create([self.lb_title, self.cb_title,
+                                        self.lb_term, self.le_term])
+        spacer = QSpacerItem(40, 20, QSizePolicy.Expanding,
+                             QSizePolicy.Minimum)
+        self.hbox_search.addItem(spacer)
 
-        self.cb_year.addItems(years)
-
-        self.hbox_my = hbox_create([
-            self.lb_media, self.cb_media, self.lb_year, self.cb_year])
-        spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        self.hbox_my.addItem(spacer)
-
-        self.vbox_main.addLayout(self.hbox_my)
+        self.vbox_main.addLayout(self.hbox_search)
 
         # total
         self.lb_total = QLabel(texts.lb_total)
@@ -98,13 +83,13 @@ class SearchMSMediaYear(QMdiSubWindow):
         self.pb_clear = pb_create(texts.pb_clear, 11, 30)
         self.pb_clear.setMaximumWidth(100)
         self.pb_clear.setShortcut('Ctrl+L')
-        self.pb_clear.clicked.connect(self.clear)
+        # self.pb_clear.clicked.connect(self.clear)
         self.pb_leave = pb_create(texts.pb_leave, 11, 30)
         self.pb_leave.setMaximumWidth(100)
         self.pb_leave.setShortcut('Ctrl+Q')
         self.pb_leave.clicked.connect(self.close)
 
-        # Hbox result
+        # Hbox_result
         self.hbox_result = hbox_create([
             self.lb_total, self.le_total, self.pb_clear, self.pb_leave])
         spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -115,10 +100,6 @@ class SearchMSMediaYear(QMdiSubWindow):
         # Table
         self.table = QTableWidget()
         self.table.setObjectName('table-search')
-        if self.type == 'movie':
-            self.num_col = 6
-        else:
-            self.num_col = 5
         self.rows = 0
         self.clear_table()
 
@@ -126,28 +107,8 @@ class SearchMSMediaYear(QMdiSubWindow):
 
         self.vbox_main.addWidget(self.table)
 
-        self.cb_media.currentIndexChanged.connect(self.query_media)
-        self.cb_year.currentIndexChanged.connect(self.query_year)
-
-    # Resize Event
-    def resizeEvent(self, event):
-        """
-        Resize actors and character combobox in table cast if windows resize.
-
-        :param event: Window.
-        """
-        self.width = event.size().width()
-        col_width = self.width - 50
-
-        self.table.setColumnWidth(0, 0.3 * col_width)
-        self.table.setColumnWidth(1, 0.3 * col_width)
-        self.table.setColumnWidth(2, 0.15 * col_width)
-        self.table.setColumnWidth(3, 0.1 * col_width)
-        self.table.setColumnWidth(4, 0.15 * col_width)
-        self.table.setColumnWidth(5, 0)
-
-        # Important don't delete it
-        QMdiSubWindow.resizeEvent(self, event)
+        self.cb_title.currentIndexChanged.connect(self.query_title)
+        self.le_term.editingFinished.connect(self.query_term)
 
     # Clear Table
     def clear_table(self):
@@ -158,7 +119,7 @@ class SearchMSMediaYear(QMdiSubWindow):
         self.table.setRowCount(0)
         self.table.setColumnCount(6)
         self.rows = 0
-        col_width = self.width - 50
+
         if self.type == 'movie':
             headers = [
                 texts.title_s,
@@ -168,8 +129,6 @@ class SearchMSMediaYear(QMdiSubWindow):
                 texts.year_s,
                 'id'
             ]
-
-
         else:
             headers = [
                 texts.title_s,
@@ -182,16 +141,36 @@ class SearchMSMediaYear(QMdiSubWindow):
 
         self.table.setHorizontalHeaderLabels(headers)
 
+        col_width = self.width - 70
         self.table.setColumnWidth(0, 0.35 * col_width)
         self.table.setColumnWidth(1, 0.35 * col_width)
-        self.table.setColumnWidth(2, 0.1 * col_width)
-        self.table.setColumnWidth(3, 0.1 * col_width)
-        self.table.setColumnWidth(4, 0.1 * col_width)
+        self.table.setColumnWidth(2, 0.10 * col_width)
+        self.table.setColumnWidth(3, 0.10 * col_width)
+        self.table.setColumnWidth(4, 0.10 * col_width)
         self.table.setColumnWidth(5, 0)
 
         self.table.verticalHeader().setVisible(False)
         self.table.setStyleSheet('background-color: #FFFFFF;')
         self.table.setSortingEnabled(True)
+
+    # Resize Event
+    def resizeEvent(self, event):
+        """
+        Resize actors and character combobox in table cast if windows resize.
+
+        :param event: Window.
+        """
+        self.width = event.size().width()
+        col_width = self.width - 70
+        self.table.setColumnWidth(0, 0.35 * col_width)
+        self.table.setColumnWidth(1, 0.35 * col_width)
+        self.table.setColumnWidth(2, 0.10 * col_width)
+        self.table.setColumnWidth(3, 0.10 * col_width)
+        self.table.setColumnWidth(4, 0.10 * col_width)
+        self.table.setColumnWidth(5, 0)
+
+        # Important don't delete it
+        QMdiSubWindow.resizeEvent(self, event)
 
     # View Movie
     def view_obj(self, row, col):
@@ -237,8 +216,7 @@ class SearchMSMediaYear(QMdiSubWindow):
                 self.table.setItem(self.rows, 2, QTableWidgetItem(o.seasons))
 
             if o.media_id:
-                self.table.setItem(self.rows, 3,
-                                   QTableWidgetItem(o.media.name))
+                self.table.setItem(self.rows, 3, QTableWidgetItem(o.media.name))
             else:
                 self.table.setItem(self.rows, 3, QTableWidgetItem(''))
 
@@ -246,8 +224,9 @@ class SearchMSMediaYear(QMdiSubWindow):
             self.table.setItem(self.rows, 5, QTableWidgetItem(str(o.id)))
 
             for i in range(6):
-                self.table.item(self.rows, i).setFlags(
-                    Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+                if self.table.item(self.rows, i):
+                    self.table.item(self.rows, i).setFlags(
+                        Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 
             self.table.cellDoubleClicked.connect(self.view_obj)
 
@@ -259,54 +238,89 @@ class SearchMSMediaYear(QMdiSubWindow):
 
         self.le_total.setText(str(self.rows))
 
-    # Query Media
-    def query_media(self):
+    # Set Query Title
+    def set_table_title(self, obj):
         """
-        Search movie by selected title in QCombobox.
-        """
-        id, name = get_combobox_info(self.cb_media)
-        if self.type == 'movie' and id != 0:
-            query = self.session.query(Movie). \
-                filter(Movie.media_id == id).order_by(Movie.name).all()
-        elif self.type == 'movie' and id == 0:
-            query = self.session.query(Movie). \
-                filter(Movie.media_id.is_(None)).order_by(Movie.name).all()
-        elif self.type == 'series' and id != 0:
-            query = self.session.query(Series). \
-                filter(Series.media_id == id).order_by(Series.media_id).all()
-        else:
-            query = self.session.query(Series). \
-                filter(Series.media_id.is_(None)).order_by(Series.media_id).all()
+        Set table with movies values search in database.
 
-        self.set_table(query)
+        :param obj: The movies values from a database search.
+        """
+        self.clear_table()
+        self.table.insertRow(self.rows)
 
-    # Query Year
-    def query_year(self):
-        """
-        Search movie by selected title in QCombobox.
-        """
-        id, name = get_combobox_info(self.cb_year)
+        self.table.setItem(self.rows, 0, QTableWidgetItem(obj.name))
+        font = QFont()
+        font.setUnderline(True)
+        self.table.item(self.rows, 0).setForeground(QColor(55, 34, 243))
+        self.table.item(self.rows, 0).setFont(font)
+        self.table.setItem(self.rows, 1, QTableWidgetItem(obj.original_name))
+
         if self.type == 'movie':
-            query = self.session.query(Movie). \
-                filter(Movie.year == name).order_by(Movie.year).all()
+            self.table.setItem(self.rows, 2, QTableWidgetItem(obj.time))
         else:
-            query = self.session.query(Series). \
-                filter(Series.year == name).order_by(Series.year).all()
+            self.table.setItem(self.rows, 2, QTableWidgetItem(obj.seasons))
 
-        self.set_table(query)
+        if obj.media:
+            self.table.setItem(self.rows, 3,
+                               QTableWidgetItem(obj.media.name))
+        else:
+            self.table.setItem(self.rows, 3, QTableWidgetItem(''))
+
+        self.table.setItem(self.rows, 4, QTableWidgetItem(obj.year))
+        self.table.setItem(self.rows, 5, QTableWidgetItem(str(obj.id)))
+
+        self.table.cellClicked.connect(self.view_obj)
+
+        self.rows += 1
+
+        self.table.setAlternatingRowColors(True)
+        self.table.setStyleSheet(
+            "alternate-background-color: #F0FAE4; background-color: #ffffff;")
+
+        self.le_total.setText(str(self.rows))
+
+    # Query Title
+    def query_title(self):
+        """
+        Search movie by selected title in QCombobox.
+        """
+        id, name = get_combobox_info(self.cb_title)
+        if self.type == 'movie':
+            query = self.session.query(Movie).get(id)
+        else:
+            query = self.session.query(Series).get(id)
+
+        self.set_table_title(query)
+
+    def query_term(self):
+        """
+        Search movie by words in title.
+        """
+        words = self.le_term.text().split()
+        queries = []
+        for word in words:
+            word = '%{0}%'.format(word)
+
+            if self.type == 'movie':
+                query = self.session.query(Movie)\
+                    .filter(Movie.name.ilike(word)).all()
+            else:
+                query = self.session.query(Series) \
+                    .filter(Series.name.ilike(word)).all()
+
+            queries += query
+
+        self.set_table(queries)
 
     def clear(self):
         """
         Clear all values in windows.
         """
-        self.cb_media.currentIndexChanged.disconnect()
-        self.cb_year.currentIndexChanged.disconnect()
-        self.cb_media.setCurrentIndex(0)
-        self.cb_year.setCurrentIndex(0)
+        self.cb_title.currentIndexChanged.disconnect()
+        self.cb_title.setCurrentIndex(0)
         self.clear_table()
         self.set_table(self.obj)
-        self.cb_media.currentIndexChanged.connect(self.query_media)
-        self.cb_year.currentIndexChanged.connect(self.query_year)
+        self.cb_title.currentIndexChanged.connect(self.query_title)
 
     # Close Event
     def closeEvent(self, event):

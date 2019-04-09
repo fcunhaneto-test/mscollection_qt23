@@ -40,8 +40,8 @@ class SearchMSCategory(QMdiSubWindow):
         windows_title = texts.search + ' ' + name + ' ' + texts.for_ \
                         + ' ' + texts.category_p
         self.setWindowTitle(windows_title)
-        self.width = int(0.8 * main.frameSize().width())
-        self.height = int(0.8 * main.frameSize().height())
+        self.width = int(0.9 * main.frameSize().width())
+        self.height = int(0.9 * main.frameSize().height())
         self.setGeometry(0, 0, self.width, self.height)
 
         self.subwindow = QWidget()
@@ -95,10 +95,6 @@ class SearchMSCategory(QMdiSubWindow):
         # Table
         self.table = QTableWidget()
         self.table.setObjectName('table-search')
-        if self.type == 'movie':
-            self.num_col = 7
-        else:
-            self.num_col = 6
         self.rows = 0
 
         self.clear_table()
@@ -117,21 +113,14 @@ class SearchMSCategory(QMdiSubWindow):
         """
         self.width = event.size().width()
         col_width = self.width - 70
-        if self.type == 'movie':
-            self.table.setColumnWidth(0, 0.4 * col_width)
-            self.table.setColumnWidth(1, 0.18 * col_width)
-            self.table.setColumnWidth(2, 0.18 * col_width)
-            self.table.setColumnWidth(3, 0.08 * col_width)
-            self.table.setColumnWidth(4, 0.08 * col_width)
-            self.table.setColumnWidth(5, 0.08 * col_width)
-            self.table.setColumnWidth(6, 0)
-        else:
-            self.table.setColumnWidth(0, 0.4 * col_width)
-            self.table.setColumnWidth(1, 0.2 * col_width)
-            self.table.setColumnWidth(2, 0.2 * col_width)
-            self.table.setColumnWidth(3, 0.1 * col_width)
-            self.table.setColumnWidth(4, 0.1 * col_width)
-            self.table.setColumnWidth(5, 0)
+
+        self.table.setColumnWidth(0, 0.4 * col_width)
+        self.table.setColumnWidth(1, 0.18 * col_width)
+        self.table.setColumnWidth(2, 0.18 * col_width)
+        self.table.setColumnWidth(3, 0.08 * col_width)
+        self.table.setColumnWidth(4, 0.08 * col_width)
+        self.table.setColumnWidth(5, 0.08 * col_width)
+        self.table.setColumnWidth(6, 0)
 
         # Important don't delete it
         QMdiSubWindow.resizeEvent(self, event)
@@ -142,8 +131,9 @@ class SearchMSCategory(QMdiSubWindow):
         Clear all tables values.
         """
         self.table.clear()
+        self.table.setColumnCount(7)
         self.table.setRowCount(0)
-        self.table.setColumnCount(self.num_col)
+
         self.rows = 0
 
         if self.type == 'movie':
@@ -156,33 +146,27 @@ class SearchMSCategory(QMdiSubWindow):
                 texts.year_s,
                 'id'
             ]
-
-            col_width = self.width - 70
-            self.table.setColumnWidth(0, 0.4 * col_width)
-            self.table.setColumnWidth(1, 0.18 * col_width)
-            self.table.setColumnWidth(2, 0.18 * col_width)
-            self.table.setColumnWidth(3, 0.08 * col_width)
-            self.table.setColumnWidth(4, 0.08 * col_width)
-            self.table.setColumnWidth(5, 0.08 * col_width)
-            self.table.setColumnWidth(6, 0)
         else:
             headers = [
                 texts.title_s,
                 texts.category_1,
                 texts.category_2,
+                texts.season_p,
                 texts.media_s,
                 texts.year_s,
                 'id'
             ]
-            col_width = self.width - 70
-            self.table.setColumnWidth(0, 0.4 * col_width)
-            self.table.setColumnWidth(1, 0.2 * col_width)
-            self.table.setColumnWidth(2, 0.2 * col_width)
-            self.table.setColumnWidth(3, 0.1 * col_width)
-            self.table.setColumnWidth(4, 0.1 * col_width)
-            self.table.setColumnWidth(5, 0)
 
         self.table.setHorizontalHeaderLabels(headers)
+
+        col_width = self.width - 70
+        self.table.setColumnWidth(0, 0.4 * col_width)
+        self.table.setColumnWidth(1, 0.18 * col_width)
+        self.table.setColumnWidth(2, 0.18 * col_width)
+        self.table.setColumnWidth(3, 0.08 * col_width)
+        self.table.setColumnWidth(4, 0.08 * col_width)
+        self.table.setColumnWidth(5, 0.08 * col_width)
+        self.table.setColumnWidth(6, 0)
 
         self.table.verticalHeader().setVisible(False)
         self.table.setStyleSheet('background-color: #FFFFFF;')
@@ -197,11 +181,10 @@ class SearchMSCategory(QMdiSubWindow):
         :param col: The number of the column on which the cell was clicked.
         """
         if self.row_select != row and col == 0:
+            obj_id = self.table.item(row, 6).text()
             if self.type == 'movie':
-                obj_id = self.table.item(row, 6).text()
                 obj = self.session.query(Movie).get(obj_id)
             else:
-                obj_id = self.table.item(row, 5).text()
                 obj = self.session.query(Series).get(obj_id)
 
             if obj.view:
@@ -240,23 +223,18 @@ class SearchMSCategory(QMdiSubWindow):
 
             if self.type == 'movie':
                 self.table.setItem(self.rows, 3, QTableWidgetItem(o.time))
-                if o.media:
-                    self.table.setItem(self.rows, 4,
-                                       QTableWidgetItem(o.media.name))
-                else:
-                    self.table.setItem(self.rows, 4, QTableWidgetItem(''))
-                self.table.setItem(self.rows, 5, QTableWidgetItem(o.year))
-                self.table.setItem(self.rows, 6, QTableWidgetItem(str(o.id)))
             else:
-                if o.media:
-                    self.table.setItem(self.rows, 3,
-                                       QTableWidgetItem(o.media.name))
-                else:
-                    self.table.setItem(self.rows, 3, QTableWidgetItem(''))
-                self.table.setItem(self.rows, 4, QTableWidgetItem(o.year))
-                self.table.setItem(self.rows, 5, QTableWidgetItem(str(o.id)))
+                self.table.setItem(self.rows, 3, QTableWidgetItem(o.seasons))
 
-            for i in range(self.num_col):
+            if o.media_id:
+                self.table.setItem(self.rows, 4, QTableWidgetItem(o.media.name))
+            else:
+                self.table.setItem(self.rows, 4, QTableWidgetItem(''))
+
+            self.table.setItem(self.rows, 5, QTableWidgetItem(o.year))
+            self.table.setItem(self.rows, 6, QTableWidgetItem(str(o.id)))
+
+            for i in range(7):
                 self.table.item(self.rows, i).setFlags(
                     Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 
