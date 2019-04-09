@@ -42,6 +42,20 @@ from subwindows.search.view_movie_search_url import  ViewMovieSearchUrl
 from subwindows.search.view_series_search_url import  ViewSeriesSearchUrl
 from subwindows.search.view_select_title import ViewSelectTitle
 
+# Delete Orphans
+from subwindows.delete_orphans.delete_orphans_cast import DeleteOrphansCast
+from subwindows.delete_orphans.delete_orphans_actor import DeleteOrphansActor
+from subwindows.delete_orphans.delete_orphans_character import \
+    DeleteOrphansCharacter
+from subwindows.delete_orphans.delete_orphans_category import \
+    DeleteOrphansCategory
+from subwindows.delete_orphans.delete_orphans_director \
+    import DeleteOrphansDirector
+from subwindows.delete_orphans.delete_orphans_creator import \
+    DeleteOrphansCreator
+from subwindows.delete_orphans.delete_orphans_media import DeleteOrphansMedia
+
+
 class MSCollection(QMainWindow):
     """
     Class of the main window and that also manages the display of all other
@@ -250,10 +264,44 @@ class MSCollection(QMainWindow):
         self.menu_search.addAction(self.menu_search_movies.menuAction())
         self.menu_search.addAction(self.menu_search_series.menuAction())
 
+        # Actions Delete Orphans ##############################################
+        self.action_delete_orphans_director = QAction(
+            texts.director_p, self, triggered=self.delete_orphans_director)
+
+        self.action_delete_orphans_creator = QAction(
+            texts.creator_p, self, triggered=self.delete_orphans_creator)
+
+        self.action_delete_orphans_cast = QAction(
+            texts.cast_p, self, triggered=self.delete_orphans_cast)
+
+        self.action_delete_orphans_actors = QAction(
+            texts.actor_p, self, triggered=self.delete_orphans_actors)
+
+        self.action_delete_orphans_character = QAction(
+            texts.character_p, self, triggered=self.delete_orphans_character)
+
+        self.action_delete_orphans_media = QAction(
+            texts.media_p, self, triggered=self.delete_orphans_media)
+
+        self.action_delete_orphans_category = QAction(
+            texts.category_p, self, triggered=self.delete_orphans_category)
+
+        # AddAction Search
+        self.menu_delete_orphans.addAction(self.action_delete_orphans_director)
+        self.menu_delete_orphans.addAction(self.action_delete_orphans_creator)
+        self.menu_delete_orphans.addAction(self.action_delete_orphans_cast)
+        self.menu_delete_orphans.addAction(self.action_delete_orphans_actors)
+        self.menu_delete_orphans.addAction(self.action_delete_orphans_character)
+        self.menu_delete_orphans.addAction(self.action_delete_orphans_media)
+        self.menu_delete_orphans.addAction(self.action_delete_orphans_category)
+
+        self.menu_edit.addAction(self.menu_delete_orphans.menuAction())
+
         # AddAction Menu ######################################################
         self.menubar.addAction(self.menu_insert.menuAction())
         self.menubar.addAction(self.menu_edit.menuAction())
         self.menubar.addAction(self.menu_search.menuAction())
+
 
     """
     All methods below is for open subwindows
@@ -370,6 +418,41 @@ class MSCollection(QMainWindow):
 
     def view_series_search_url(self):
         subwindow = ViewSeriesSearchUrl(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def delete_orphans_director(self):
+        subwindow = DeleteOrphansDirector(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def delete_orphans_creator(self):
+        subwindow = DeleteOrphansCreator(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def delete_orphans_cast(self):
+        subwindow = DeleteOrphansCast(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def delete_orphans_actors(self):
+        subwindow = DeleteOrphansActor(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def delete_orphans_character(self):
+        subwindow = DeleteOrphansCharacter(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def delete_orphans_category(self):
+        subwindow = DeleteOrphansCategory(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def delete_orphans_media(self):
+        subwindow = DeleteOrphansMedia(self)
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
 
