@@ -10,7 +10,7 @@ mkdir views/series
 mkdir views/episodes
 
 # install virtualenv
-#python3 -m venv venv
+python3 -m venv venv
 
 # abs path
 dir=$(pwd)

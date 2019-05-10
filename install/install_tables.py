@@ -263,7 +263,7 @@ def create_tables(url):
     categories = [
         Category(name='Ação'), Category(name='Adulto'),
         Category(name='Aventura'), Category(name='Animação'),
-        Category(name='Biografia'), Category(name='Comedia'),
+        Category(name='Biografia'), Category(name='Comédia'),
         Category(name='Policial'), Category(name='Documentário'),
         Category(name='Drama'), Category(name='Família'),
         Category(name='Fantasia'), Category(name='Film Noir'),

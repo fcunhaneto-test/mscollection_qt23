@@ -1,4 +1,5 @@
 #!/home/francisco/Projects/Pycharm/mscollection_qt23/venv/bin/python
+#!/home/francisco/Projects/Pycharm/mscollection_qt23/venv/bin/python
 import sys
 
 from PyQt5.QtCore import Qt
@@ -202,7 +203,6 @@ class MSCollection(QMainWindow):
 
         self.menu_edit.addAction(self.action_edit_season)
         self.menu_edit.addAction(self.action_edit_season_cast)
-        self.menu_edit.addAction(self.action_edit_rewrite_html)
 
         # Actions Search ######################################################
         self.actions_view_movie_web_url = QAction(
@@ -296,6 +296,7 @@ class MSCollection(QMainWindow):
         self.menu_delete_orphans.addAction(self.action_delete_orphans_category)
 
         self.menu_edit.addAction(self.menu_delete_orphans.menuAction())
+        self.menu_edit.addAction(self.action_edit_rewrite_html)
 
         # AddAction Menu ######################################################
         self.menubar.addAction(self.menu_insert.menuAction())

@@ -75,10 +75,10 @@ def write_series_html(session, series):
                                     a.cast.characters.name])
 
         html_actors = '\t\t\t<p class="fields">' \
-                      '<span>Elenco:&nbsp;&nbsp;</span></p>\n\t\t\t<ul>'
+                      '<span>Elenco:&nbsp;&nbsp;</span></p>\n\t\t\t<ul>\n'
 
         for a, c in actors_list:
-            html_actors += '\t\t\t\t<li>' + a + ' / ' + c + '</li>\n'
+            html_actors += '\t\t\t\t<li>' + a + '&nbsp;&rarr;&nbsp; ' + c + '</li>\n'
 
         html_actors += '\t\t\t</ul>'
 

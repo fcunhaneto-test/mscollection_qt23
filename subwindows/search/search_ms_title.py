@@ -55,6 +55,7 @@ class SearchMSTitle(QMdiSubWindow):
         self.lb_title = QLabel(texts.title_s)
         self.lb_title.setMaximumSize(QSize(100, 25))
         self.cb_title = cb_create()
+        self.cb_title.addItem('', 0)
         for ms in self.obj:
             self.cb_title.addItem(ms.name, ms.id)
 

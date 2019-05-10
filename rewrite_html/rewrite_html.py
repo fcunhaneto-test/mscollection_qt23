@@ -77,7 +77,7 @@ class RewriteHtml(QMdiSubWindow):
         series = session.query(Series).all()
 
         total = len(series)
-        self.p_bar_movies.setMaximum(total)
+        self.p_bar_series.setMaximum(total)
         i = 1
         for s in series:
             view = write_series_html(session, s)
