@@ -1,5 +1,4 @@
 #!/home/francisco/Projects/Pycharm/mscollection_qt23/venv/bin/python
-#!/home/francisco/Projects/Pycharm/mscollection_qt23/venv/bin/python
 import sys
 
 from PyQt5.QtCore import Qt

@@ -25,7 +25,7 @@ class SearchMovieBox(QMdiSubWindow):
         self.main = main
         self.row_select = -1
         self.movies = self.session.query(Movie).\
-            filter(Movie.box_id == Box.id).oreall()
+            filter(Movie.box_id == Box.id).all()
 
         windows_title = texts.search + ' ' + texts.movie_s + ' ' + \
                         texts.for_ + ' ' + texts.box
@@ -120,7 +120,7 @@ class SearchMovieBox(QMdiSubWindow):
         # Important don't delete it
         QMdiSubWindow.resizeEvent(self, event)
 
-        self.set_table(self.bo)
+        self.set_table(self.movies)
 
     # Clear Table
     def clear_table(self):
