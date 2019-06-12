@@ -169,6 +169,17 @@ class EditMovie(QMdiSubWindow):
         self.fm_2.setWidget(5, QFormLayout.LabelRole, self.lb_poster)
         self.fm_2.setWidget(5, QFormLayout.FieldRole, self.le_poster)
 
+        # Search Url Label
+        self.lb_url = QLabel('Wait URL')
+        self.lb_url.setMaximumWidth(170)
+        self.lb_url.setOpenExternalLinks(True)
+        self.lb_url.setStyleSheet("padding: 4px; "
+                                  "border: 1px solid black; "
+                                  "background-color: rgb(219, 219, 219); "
+                                  "color : blue;")
+
+        self.fm_2.setWidget(6, QFormLayout.LabelRole, self.lb_url)
+
         # Horizontal Layout for Frame layout
         self.hbox_fms = hbox_create([])
         self.hbox_fms.addLayout(self.fm_1)
@@ -425,16 +436,9 @@ class EditMovie(QMdiSubWindow):
         self.le_web_url.setText(self.movie.web_url)
         self.le_search_url.setText(self.movie.search_url)
 
-
         if self.movie.search_url:
-            lb_url = QLabel()
-            lb_url.setMaximumWidth(170)
-            lb_url.setOpenExternalLinks(True)
-            lb_url.setText('<a href=\"' + self.movie.search_url +
-                           '">Abrir url de pesquisa</a>')
-            lb_url.setStyleSheet("padding: 5px; border: 1px solid black; background-color: rgb(219, 219, 219); color : blue;")
-
-            self.fm_2.setWidget(6, QFormLayout.LabelRole, lb_url)
+            self.lb_url.setText('<a href=\"' + self.movie.search_url +
+                                '">Abrir url de pesquisa</a>')
 
         self.le_summary.setText(self.movie.summary)
 

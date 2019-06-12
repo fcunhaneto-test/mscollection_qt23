@@ -113,6 +113,12 @@ class EditSeries(QMdiSubWindow):
         self.fm_1.setWidget(5, QFormLayout.LabelRole, self.lb_search_url)
         self.fm_1.setWidget(5, QFormLayout.FieldRole, self.le_search_url)
 
+        # Web URL
+        self.lb_web_url = QLabel(texts.lb_url)
+        self.le_web_url = le_create(255)
+        self.fm_1.setWidget(6, QFormLayout.LabelRole, self.lb_web_url)
+        self.fm_1.setWidget(6, QFormLayout.FieldRole, self.le_web_url)
+
         # Form Layout 2
         self.fm_2 = QFormLayout()
         self.fm_2.setContentsMargins(20, 20, 20, 20)
@@ -153,11 +159,16 @@ class EditSeries(QMdiSubWindow):
         self.fm_2.setWidget(4, QFormLayout.LabelRole, self.lb_keyword)
         self.fm_2.setWidget(4, QFormLayout.FieldRole, self.cb_keyword)
 
-        # Web URL
-        self.lb_web_url = QLabel(texts.lb_url)
-        self.le_web_url = le_create(255)
-        self.fm_1.setWidget(5, QFormLayout.LabelRole, self.lb_web_url)
-        self.fm_1.setWidget(5, QFormLayout.FieldRole, self.le_web_url)
+        # Search Url Label
+        self.lb_url = QLabel('Wait URL')
+        self.lb_url.setMaximumWidth(170)
+        self.lb_url.setOpenExternalLinks(True)
+        self.lb_url.setStyleSheet("padding: 4px; "
+                                  "border: 1px solid black; "
+                                  "background-color: rgb(219, 219, 219); "
+                                  "color : blue;")
+
+        self.fm_2.setWidget(5, QFormLayout.LabelRole, self.lb_url)
 
         # Horizontal Layout for Frame layout
         self.hbox_fms = hbox_create([])
@@ -409,6 +420,12 @@ class EditSeries(QMdiSubWindow):
         self.le_poster.setText(self.series.poster)
         self.le_web_url.setText(self.series.web_url)
         self.le_search_url.setText(self.series.search_url)
+
+        if self.series.search_url:
+            self.lb_url.setText('<a href=\"' + self.series.search_url +
+                           '">Abrir URL de pesquisa</a>')
+
+
         self.le_summary.setText(self.series.summary)
 
         if self.series.media_id:
