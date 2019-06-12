@@ -424,6 +424,18 @@ class EditMovie(QMdiSubWindow):
         self.le_poster.setText(self.movie.poster)
         self.le_web_url.setText(self.movie.web_url)
         self.le_search_url.setText(self.movie.search_url)
+
+
+        if self.movie.search_url:
+            lb_url = QLabel()
+            lb_url.setMaximumWidth(170)
+            lb_url.setOpenExternalLinks(True)
+            lb_url.setText('<a href=\"' + self.movie.search_url +
+                           '">Abrir url de pesquisa</a>')
+            lb_url.setStyleSheet("padding: 5px; border: 1px solid black; background-color: rgb(219, 219, 219); color : blue;")
+
+            self.fm_2.setWidget(6, QFormLayout.LabelRole, lb_url)
+
         self.le_summary.setText(self.movie.summary)
 
         if self.movie.media_id:
