@@ -323,7 +323,6 @@ class EditMovie(QMdiSubWindow):
                 QMessageBox.Close
             )
         else:
-            movie_fields = {}
             self.movie.name = self.le_title.text()
             self.movie.original_name = self.le_original_title.text()
             self.movie.year = self.le_year.text()

@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 
 path = getcwd()
 
+
 class AdoroCinemaMovieScraping:
     def __init__(self, url):
         """
