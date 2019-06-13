@@ -48,6 +48,7 @@ title_p = 'Títulos'
 warning = 'Aviso'
 year_s = 'Ano'
 year_p = 'Anos'
+progress = 'Progresso'
 
 for_ = 'Por'
 of_1 = 'de'

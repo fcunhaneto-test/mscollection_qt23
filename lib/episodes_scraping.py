@@ -21,10 +21,10 @@ def episodes_scraping_ms(url, p_bar):
 
     num = int(num)
 
-    p_bar.setMaximum(num)
     episodes = []
     for n in range(1, num+1):
         episode = []
+
         url = url1 + str(n)
 
         http = urlopen(url)
@@ -37,6 +37,8 @@ def episodes_scraping_ms(url, p_bar):
         episodes.append(episode)
 
         p_bar.setValue(n)
+
+
 
     return episodes
 

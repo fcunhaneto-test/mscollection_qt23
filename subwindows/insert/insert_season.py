@@ -92,7 +92,8 @@ class InsertSeason(QMdiSubWindow):
 
         # IMDB URL
         self.lb_url_imdb = QLabel(texts.lb_search_season_imdb)
-        self.le_url_imdb = le_create()
+        self.le_url_imdb = le_create(tooltip=texts.ms_episode_search,
+                                     place_holder='IMDB URL')
         self.le_url_imdb.returnPressed.connect(lambda site='imdb':
                                                self.scraping_episodes(site))
 
@@ -101,12 +102,14 @@ class InsertSeason(QMdiSubWindow):
 
         # Minha Série URL
         self.lb_urL_ms = QLabel(texts.lb_search_season_ms)
-        self.le_url_ms = le_create(tooltip=texts.ms_episode_search)
+        self.le_url_ms = le_create(tooltip=texts.ms_episode_search,
+                                   place_holder='Minha Série URL')
         self.le_url_ms.returnPressed.connect(lambda site='ms':
                                              self.scraping_episodes(site))
 
         self.fm_left.setWidget(4, QFormLayout.LabelRole, self.lb_urL_ms)
         self.fm_left.setWidget(4, QFormLayout.FieldRole, self.le_url_ms)
+
 
         # PB Search
         self.lb_episode_search = QLabel(texts.lb_episode_search)
@@ -124,33 +127,12 @@ class InsertSeason(QMdiSubWindow):
         self.fm_left.setLayout(5, QFormLayout.FieldRole,
                                self.hbox_url_pb)
 
-        # PB Main
-        line_h_1 = line_h_create('2px', '#7777FF')
-        line_h_2 = line_h_create('2px', '#7777FF')
-        self.fm_left.setWidget(6, QFormLayout.FieldRole, line_h_1)
-        self.fm_left.setWidget(7, QFormLayout.FieldRole, line_h_2)
+        self.lb_progress = QLabel(texts.progress)
+        self.p_bar = QProgressBar()
+        self.p_bar.setValue(0)
 
-        self.pb_save = pb_create(texts.pb_save)
-        self.pb_save.clicked.connect(self.save_season_episodes)
-        self.pb_save.setShortcut('Ctrl+S')
-
-        self.pb_clear = pb_create(texts.pb_clear)
-        self.pb_clear.clicked.connect(self.clear)
-        self.pb_clear.setShortcut('Ctrl+L')
-
-        self.pb_help = pb_create(texts.pb_help)
-        self.pb_help.clicked.connect(self.help)
-        self.pb_help.setShortcut('Ctrl+H')
-
-        self.pb_leave = pb_create(texts.pb_leave)
-        self.pb_leave.clicked.connect(self.close)
-        self.pb_leave.setShortcut('Ctrl+Q')
-
-        self.hbox_pb_main = hbox_create([
-            self.pb_save, self.pb_clear, self.pb_help, self.pb_leave
-        ])
-
-        self.fm_left.setLayout(8, QFormLayout.FieldRole, self.hbox_pb_main)
+        self.fm_left.setWidget(6, QFormLayout.LabelRole, self.lb_progress)
+        self.fm_left.setWidget(6, QFormLayout.FieldRole, self.p_bar)
 
         # Series Right Size
         self.vbox_right = QVBoxLayout()
@@ -206,16 +188,39 @@ class InsertSeason(QMdiSubWindow):
         self.hbox_2.addLayout(self.vbox_right)
         self.vbox_main.addLayout(self.hbox_2)
 
+        line_h = line_h_create('2px', '#000000')
+        self.hbox_3 = hbox_create([line_h])
+        self.vbox_main.addLayout(self.hbox_3)
+
+        # PB Main
+        self.pb_save = pb_create(texts.pb_save, 12, 40)
+        self.pb_save.clicked.connect(self.save_season_episodes)
+        self.pb_save.setShortcut('Ctrl+S')
+
+        self.pb_clear = pb_create(texts.pb_clear, 12, 40)
+        self.pb_clear.clicked.connect(self.clear)
+        self.pb_clear.setShortcut('Ctrl+L')
+
+        self.pb_help = pb_create(texts.pb_help, 12, 40)
+        self.pb_help.clicked.connect(self.help)
+        self.pb_help.setShortcut('Ctrl+H')
+
+        self.pb_leave = pb_create(texts.pb_leave, 12, 40)
+        self.pb_leave.clicked.connect(self.close)
+        self.pb_leave.setShortcut('Ctrl+Q')
+
+        self.hbox_4 = hbox_create([self.pb_save, self.pb_clear,
+                                  self.pb_help, self.pb_leave])
+
+        self.vbox_main.addLayout(self.hbox_4)
+
         # Episode Add Row
         self.lb_episode = QLabel(texts.episode_s)
         self.pb_add_row_episode = pb_create('+', 12, 30, 50)
         self.pb_add_row_episode.clicked.connect(self.table_episode_add_row)
 
-        self.p_bar = QProgressBar()
-        self.p_bar.setValue(0)
-
         self.hbox_episode = hbox_create([
-            self.lb_episode, self.pb_add_row_episode, self.p_bar
+            self.lb_episode, self.pb_add_row_episode
         ])
 
         spacer_item = QSpacerItem(40, 20, QSizePolicy.Expanding,
@@ -766,7 +771,16 @@ class InsertSeason(QMdiSubWindow):
 
     # Help
     def help(self):
-        pass
+        """
+        Call for help.
+
+        :return: Show a help view.
+        """
+        # I have to perform help preview functions on the main because the bug
+        # "stack_trace posix.cc (699)" does not let the page find its directory.
+        dir = os.getcwd()
+        url = 'file:///' + dir + '/views_help/help_insert_edit_season.html'
+        self.main.views_help(url, texts.help_insert_movie)
 
     # Close Event
     def closeEvent(self, event):

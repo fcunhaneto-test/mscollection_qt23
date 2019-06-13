@@ -27,6 +27,8 @@ from subwindows.edit.edit_season_cast import EditSeasonCast
 
 from rewrite_html.rewrite_html import RewriteHtml
 
+from subwindows.search.views_help import ViewsHelp
+
 # Search
 from subwindows.search.search_movie_box import SearchMovieBox
 
@@ -453,6 +455,11 @@ class MSCollection(QMainWindow):
 
     def delete_orphans_media(self):
         subwindow = DeleteOrphansMedia(self)
+        self.mdi_area.addSubWindow(subwindow)
+        subwindow.show()
+
+    def views_help(self, url, title):
+        subwindow = ViewsHelp(self, url, title)
         self.mdi_area.addSubWindow(subwindow)
         subwindow.show()
 
