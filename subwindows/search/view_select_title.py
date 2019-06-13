@@ -17,17 +17,8 @@ class ViewSelectTitle(QMdiSubWindow):
         self.setGeometry(QRect(0, 0, 950, 620))
         path = getcwd()
         view = 'file://' + path + view
-        print(view)
+
         self.webView = QWebEngineView()
         self.setWidget(self.webView)
         self.webView.setUrl(QUrl(view))
         self.webView.show()
-
-        midle = main.frameSize().width() / 2
-        x = midle - 425
-        self.move(x, 0)
-
-
-
-
-

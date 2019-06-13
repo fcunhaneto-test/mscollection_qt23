@@ -45,14 +45,10 @@ def write_movie_html(session, movie):
         text = movie.summary.replace('\n', '<br>')
         html_summary = '\t\t\t<p class="summary">' + text + '</p>\n'
 
-    print(movie.name)
-    print(year, time)
-    print(html_media)
-    print(html_summary)
     categories = ''
     if movie.category_1_id:
         categories = movie.category_1.name
-        print(categories)
+
     if movie.category_2_id:
         categories += ', ' + movie.category_2.name
 

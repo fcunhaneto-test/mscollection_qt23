@@ -86,6 +86,9 @@ class RewriteHtml(QMdiSubWindow):
 
             self.p_bar_series.setValue(i)
             i += 1
+            
+            
+            
 
 
 

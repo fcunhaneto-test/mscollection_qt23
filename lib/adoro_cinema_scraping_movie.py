@@ -52,6 +52,7 @@ class AdoroCinemaMovieScraping:
                     find('h2', {'class', 'that'}).text
             except AttributeError:
                 pass
+
         # Year
         if self.soup1.find('span', text=re.compile(r"^Data de lançamento$")):
             try:
@@ -158,7 +159,6 @@ class AdoroCinemaMovieScraping:
                 ac.append(a.text.strip())
                 ac.append(s[1].strip())
                 actors_characters.append(ac)
-
 
             self.result['cast'] = actors_characters
 
