@@ -87,9 +87,10 @@ class AdoroCinemaSeriesScraping:
             thumbnail_url = thumbnail['src']
 
             name = self.result['title'].lower()
-            char = [' ', '.', '/', '\\', ',', ';']
-            file = ''
-            for c in char:
+
+            chars = ['\\', '/', '|', '?', '>', '<', '*', ':', '"']
+
+            for c in chars:
                 file = name.replace(c, '_')
 
             poster = normalize('NFKD', file).encode('ASCII', 'ignore').decode(

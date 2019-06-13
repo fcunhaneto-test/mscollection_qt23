@@ -109,6 +109,8 @@ def write_series_html(session, series):
 
     if series.poster:
         poster = series.poster
+    else:
+        poster = '../../images/poster_placeholder.png'
 
     html_ini = '' \
         '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 ' \

@@ -124,11 +124,12 @@ class AdoroCinemaMovieScraping:
                 find('div', {'class': 'movie-card-overview'}).find('img')
             t_url = thumbnail['src']
 
-            poster = self.result['title'].lower()
-            char = [' ', '.', '/', '\\', ',', ';']
-            file = ''
-            for c in char:
-                file = poster.replace(c, '_')
+            name = self.result['title'].lower()
+
+            chars = ['\\', '/', '|', '?', '>', '<', '*', ':', '"']
+
+            for c in chars:
+                file = name.replace(c, '_')
 
             poster = normalize('NFKD', file).encode('ASCII', 'ignore').\
                 decode('ASCII')

@@ -16,6 +16,7 @@ class ViewSelectTitle(QMdiSubWindow):
         self.setWindowTitle(title)
         self.setGeometry(QRect(0, 0, 950, 620))
         path = getcwd()
+
         view = 'file://' + path + view
 
         self.webView = QWebEngineView()

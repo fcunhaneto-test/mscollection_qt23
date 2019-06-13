@@ -74,13 +74,14 @@ class ImdbScraping:
         poster = self.soup.find('div', {'class': 'poster'}).a.img
         if poster:
             url = poster['src']
-            poster = poster['title'].lower()
+            name = poster['title'].lower()
 
-            char = [' ', '.', '/', '\\', ',', ';']
-            for c in char:
-                poster = poster.replace(c, '_')
+            chars = ['\\', '/', '|', '?', '>', '<', '*', ':', '"']
 
-            poster = normalize('NFKD', poster).encode('ASCII', 'ignore').\
+            for c in chars:
+                file = name.replace(c, '_')
+
+            file = normalize('NFKD', file).encode('ASCII', 'ignore').\
                 decode('ASCII')
 
             file_path = path + '/poster/' + poster + '.jpg'

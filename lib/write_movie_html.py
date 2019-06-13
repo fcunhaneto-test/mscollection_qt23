@@ -109,6 +109,8 @@ def write_movie_html(session, movie):
 
     if movie.poster:
         poster = movie.poster
+    else:
+        poster = '../../images/poster_placeholder.png'
 
     html_ini = '' \
         '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN http:' \
